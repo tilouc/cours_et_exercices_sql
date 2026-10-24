@@ -1,2 +1,2 @@
 SELECT nom, population, surface
-FROM pays
+FROM pays;

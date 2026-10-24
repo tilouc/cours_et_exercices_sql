@@ -1,4 +1,4 @@
 SELECT station, trafic
 FROM metro
 ORDER BY trafic DESC
-LIMIT 1
+LIMIT 1;

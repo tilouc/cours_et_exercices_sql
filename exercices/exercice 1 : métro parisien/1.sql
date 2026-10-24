@@ -1,2 +1,2 @@
 SELECT station
-FROM metro
+FROM metro;
