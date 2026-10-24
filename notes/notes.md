@@ -276,3 +276,679 @@ FROM produits;
 sql fait : (800 + 25 + 60 + 200 + 90) / 5 = 235
 
 résultat : 235
+
+
+
+chapitre 1 — partie 5 : AS
+
+1. à quoi sert AS ?
+
+en sql, AS permet de donner un nom à une colonne dans le résultat d'une requête.
+
+reprenons notre table produits comme exemple : 
+
+nom	        prix	stock
+ordinateur	800	    5
+souris	    25	    20
+clavier	    60	    12
+écran	    200	    8
+casque	    90	    15
+
+imagine qu'on veut afficher la valeur totale du stock de chaque produit : 
+
+on sait déjà écrire : 
+
+SELECT nom, prix * stock
+FROM produits;
+
+le problème, c'est que le résultat possède un nom de colonne pas très clair : 
+
+nom	        prix * stock
+ordinateur	4000
+souris	    500
+clavier	    720
+écran	    1600
+casque	    1350
+
+avec AS, je peux donner un nom plus clair à cette colonne : 
+
+SELECT nom, prix * stock as valeur_stock
+FROM produits;
+
+résultat :
+
+nom	        valeur_stock
+ordinateur	4000
+souris	    500
+clavier	    720
+écran	    1600
+casque	    1350
+
+la différence est qu'au lieu d'afficher prix * stock comme titre de colonne, sql affiche valeur_stock.
+
+il est important de savoir que AS ne modifie pas la table d'origine. il change seulement le nom affiché dans le résultat.
+
+2. as fonctionne aussi avec les fonctions d'agrégation
+
+par exemple : 
+
+SELECT AVG(prix) as prix_moyen
+FROM produits;
+
+résultat :
+
+prix_moyen
+235
+
+on a tout simplement donné le nom prix_moyen au résultat de AVG(prix).
+
+
+
+chapitre 1 — partie 6 : WHERE
+
+1. à quoi sert WHERE ?
+
+jusqu'ici, on sait comment afficher des colonnes avec SELECT. mais, imaginons qu'on veut afficher seulement certains produits , par exemple, ceux qui coûtent plus de 100 €.
+
+c'est ici que WHERE intervient.
+
+WHERE permet de récupérer seulement les lignes qui respectent une ou plusieurs conditions.
+
+reprenons notre table produits comme exemple : 
+
+nom	        prix	stock
+ordinateur	800	    5
+souris	    25	    20
+clavier	    60	    12
+écran	    200	    8
+casque	    90	    15
+
+on souhaite récupérer uniquement les produits dont le prix dépasse 100 € : 
+
+SELECT nom, prix
+FROM produits
+WHERE prix > 100;
+
+SELECT nom, prix : récupére les colonnes nom et prix.
+FROM produits : cherche dans la table produits.
+WHERE prix > 100 : garde uniquement les produits dont le prix est supérieur à 100 €.
+
+résultat : 
+
+nom	        prix
+ordinateur	800
+écran	    200
+
+la souris, le clavier et le casque ne sont pas affichés car ils ne respectent pas la condition.
+
+2. les opérateurs de comparaison
+
+avec WHERE, tu peux utiliser différents opérateurs : 
+
+opérateur	signification	        exemple
+=	        égal à	                prix = 200
+>	        supérieur à	            prix > 100
+<	        inférieur à	            prix < 100
+>=	        supérieur ou égal à	    prix >= 100
+<=	        inférieur ou égal à	    prix <= 100
+!=	        différent de	        prix != 100
+
+attention, car en sql, on utilise = pour comparer deux valeurs et non == comme en python.
+
+exemple 1 - produits à moins de 100 € : 
+
+SELECT nom, prix
+FROM produits
+WHERE prix < 100;
+
+résultat :
+
+nom	    prix
+souris	25
+clavier	60
+casque	90
+
+exemple 2 - produits dont le stock est inférieur ou égal à 8 : 
+
+SELECT nom, stock
+FROM produits
+WHERE stock <= 8;
+
+résultat : 
+
+nom	        stock
+ordinateur	5
+écran	    8
+
+3. comment comparer du texte ?
+
+jusqu'ici, nos conditions concernaient uniquement les nombres. mais, on peut également comparer du texte.
+
+par exemple, pour retrouver le produit appelé souris : 
+
+SELECT *
+FROM produits
+WHERE nom = 'souris';
+
+résultat : 
+
+nom	    prix	stock
+souris	25	    20
+
+attention, car les valeurs textuelles sont placées entre apostrophes '...' ou "...".
+
+à retenir : 
+
+WHERE sert à filtrer les lignes d'une table selon une condition. il se place après FROM.
+prix = 25 : comparaison avec un nombre.
+nom = 'souris' : comparaison avec un texte.
+
+chapitre 1 — partie 7 : AND et OR
+
+1. à quoi servent AND et OR ?
+
+jusqu'ici, on a utilisé WHERE avec une seule condition.
+
+mais imaginons qu'on veut chercher des produits qui respectent plusieurs conditions en même temps.
+
+c'est exactement le rôle de AND et OR.
+
+AND signifie et : toutes les conditions doivent être vraies.
+OR signifie ou : au moins une des conditions doit être vraie.
+
+reprenons notre table produits comme exemple : 
+
+nom	        prix	stock
+ordinateur	800	    5
+souris	    25	    20
+clavier	    60	    12
+écran	    200	    8
+casque	    90	    15
+
+2. AND — plusieurs conditions obligatoires
+
+imagine qu'on veut afficher les produits qui coûtent plus de 50 € et dont le stock est supérieur ou égal à 10 : 
+
+SELECT nom, prix, stock
+FROM produits
+WHERE prix > 50 AND stock >= 10;
+
+pour chaque produit, sql vérifie deux conditions : 
+
+produit	    prix > 50	stock ≥ 10	retenu ?
+ordinateur	oui	        non	        non
+souris	    non	        oui	        non
+clavier	    oui	        oui	        oui
+écran	    oui	        non	        non
+casque	    oui	        oui	        oui
+
+résultat :
+
+nom	    prix	stock
+clavier	60	    12
+casque	90	    15
+
+avec AND, une seule condition qui est fausse suffit pour exclure un produit.
+
+3. OR — au moins une condition vraie
+
+cette fois, on veut afficher les produits qui coûtent plus de 500 € ou dont le stock est supérieur ou égal à 15 : 
+
+SELECT nom, prix, stock
+FROM produits
+WHERE prix > 500 OR stock >= 15;
+
+produit	    prix > 500	stock ≥ 15	retenu ?
+ordinateur	oui	        non	        oui
+souris	    non	        oui	        oui
+clavier	    non	        non	        non
+écran	    non	        non	        non
+casque	    non	        oui	        oui
+
+résultat : 
+
+nom	        prix	stock
+ordinateur	800	    5
+souris	    25	    20
+casque	    90	    15
+
+avec OR, une seule condition vraie suffit pour inclure le produit.
+
+attention, car OR inclut aussi les lignes où les deux conditions sont vraies.
+
+4. combiner AND et OR avec des parenthèses
+
+il est possible de combiner les deux (AND et OR).
+
+imagine qu'on souhaite afficher les produits : 
+- dont le prix dépasse 100 € OU dont le stock atteint au moins 15;
+- ET dont le prix reste inférieur à 500 €.
+
+on écrit : 
+
+SELECT nom, prix, stock
+FROM produits
+WHERE (prix > 100 or stock >= 15)
+AND prix < 500;
+
+ici, les parenthèses servent à regrouper les conditions. sql examine d'abord la condition entre parenthèses, puis vérifie que le prix est inférieur à 500.
+
+résultat : 
+
+nom	    prix	stock
+souris	25	    20
+écran	200	    8
+casque	90	    15
+
+il est important de savoir que sans parenthèses, AND est prioritaire sur OR.
+
+à retenir : 
+
+AND exige toutes les conditions, OR exige au moins une et les parenthèses permettent de regrouper les conditions.
+
+
+
+chapitre 1 — partie 8 : LIKE
+
+1. à quoi sert LIKE ?
+
+jusqu'ici, on sait qu'utiliser WHERE sert à chercher des valeurs précises.
+
+par exemple : 
+
+SELECT nom
+FROM produits
+WHERE nom = 'clavier';
+
+cette requête recherche le produit dont le nom exact est clavier. mais, imaginons maintenant qu'on veut trouver tous les produits dont le nom commence par la lettre c. on ne connait pas forcément leurs noms complets. c'est ici qu'intervient LIKE.
+
+LIKE permet de rechercher du texte selon un motif sans forcément connaître le texte en entier.
+
+2. comprendre le symbole %
+
+en sql, % représente zéro, un ou plusieurs caractères.
+
+reprenons notre table produits comme exemple : 
+
+nom	        prix	stock
+ordinateur	800	    5
+souris	    25	    20
+clavier	    60	    12
+écran	    200	    8
+casque	    90	    15
+
+exemple 1 - les noms qui commencent par c : 
+
+SELECT nom
+FROM produits
+WHERE nom LIKE 'c%';
+
+ici : 
+- c signifie que le nom doit commencer par cette lettre.
+- % signifie que n'importe quels caractères peuvent suivre.
+
+résultat : 
+
+nom
+clavier
+casque
+
+exemple 2 - les noms qui se terminent par e : 
+
+SELECT nom
+FROM produits
+WHERE nom LIKE '%e';
+
+ici, on accepte n'importe quels caractères avant la lettre e.
+
+résultat :
+
+nom
+casque
+
+exemple 3 - les noms qui contiennent la lettre a : 
+
+SELECT nom
+FROM produits
+WHERE nom LIKE '%a%';
+
+ici, le nom peut contenir des caractères avant et après la lettre a.
+
+résultat : 
+
+nom
+clavier
+écran
+casque
+
+il est important de comprendre que la position de % change le type de recherche.
+
+3. comprendre l'utilité du symbole _
+
+contrairement à %, le symbole _ remplace exactement un caractère.
+
+exemple : 
+
+SELECT nom
+FROM produits
+WHERE nom LIKE 'c_sque';
+
+sql recherche un nom qui : 
+- commence par c;
+- possède exactement un caractère après c;
+- se termine par sque.
+
+casque correspond, parce que le _ remplace la lettre a.
+
+résultat :
+
+nom
+casque
+
+comparaison : 
+
+symbole	signification
+%	    zéro, un ou plusieurs caractères
+_	    un caractère
+
+4. comparer = et like
+
+il faut faire attention à cette différence : 
+
+WHERE nom = 'c%'
+
+car, ici sql recherche littéralement le texte c%
+
+en revanche : 
+
+WHERE nom LIKE 'c%'
+
+ici, sql recherche tous les noms commençant par c.
+
+% et _ sont des caractères spéciaux lorsqu'ils sont utilisés dans LIKE.
+
+à retenir : 
+
+LIKE sert à rechercher du texte selon un motif. % remplace un nombre quelconque de caractères, tandis que _ en remplace exactement un.
+
+
+
+chapitre 1 — partie 9 : ORDER BY
+
+1. à quoi sert ORDER BY ?
+
+jusqu'ici, on sait comment récupérer des données avec SELECT et les filtrer avec WHERE. mais imagine qu'on veut afficher les produits du moins cher au plus cher.
+
+c'est ici qu'intervient ORDER BY.
+
+ORDER BY permet de trier les résultats d'une requête sql.
+
+reprenons notre table produits comme exemple : 
+
+nom	        prix	stock
+ordinateur	800	    5
+souris	    25	    20
+clavier	    60	    12
+écran	    200	    8
+casque	    90	    15
+
+2. ASC : trier dans l'ordre croissant
+
+on veut afficher les produits du moins cher au plus cher : 
+
+SELECT nom, prix
+FROM produits
+ORDER BY prix ASC;
+
+ASC signifie ascending, c'est-à-dire croissant.
+
+résultat : 
+
+nom	        prix
+souris	    25
+clavier	    60
+casque	    90
+écran	    200
+ordinateur	800
+
+il est important de savoir que ASC est facultatif. si on écrit simplement : 
+
+SELECT nom, prix
+FROM produits
+ORDER BY prix;
+
+on obtient le même résultat car l'ordre croissant est utilisé par défaut.
+
+3. DESC: trier dans l'ordre décroissant
+
+ici, on peut afficher les produits du plus cher au moins cher : 
+
+SELECT nom, prix
+FROM produits
+ORDER BY prix desc;
+
+DESC signifie descending, c'est-à-dire décroissant.
+
+résultat :
+
+nom	        prix
+ordinateur	800
+écran	    200
+casque	    90
+clavier	    60
+souris	    25
+
+instruction	        résultat
+order by prix asc	du moins cher au plus cher
+order by prix desc	du plus cher au moins cher
+order by prix	    identique à asc
+
+4. peut-on trier du texte ?
+
+oui. ORDER BY ne fonctionne pas seulement avec des nombres.
+
+par exemple : 
+
+SELECT nom
+FROM produits
+ORDER BY nom ASC;
+
+résultat :
+
+nom
+casque
+clavier
+écran
+ordinateur
+souris
+
+les noms sont classés par ordre alphabétique. et avec DESC, on obtient l'ordre alphabétique inverse.
+
+5. combiner WHERE et ORDER BY
+
+imagine qu'on veut afficher les produits coûtant plus de 50 €, classés du plus cher au moins cher : 
+
+SELECT nom, prix
+FROM produits
+WHERE prix > 50
+ORDER BY prix DESC;
+
+sql va : 
+
+1. récupérer les données de produits;
+2. conserver uniquement les produits dont le prix dépasse 50 €;
+3. trier ces produits du plus cher au moins cher.
+
+résultat : 
+
+nom	        prix
+ordinateur	800
+écran	    200
+casque	    90
+clavier	    60
+
+attention à l'ordre d'écriture car WHERE vient avant ORDER BY.
+
+à retenir : 
+
+ORDER BY trie les résultats. ASC signifie croissant (par défaut), DESC signifie décroissant. ORDER BY se place après WHERE seulement si y en a un.
+
+
+
+chapitre 1 — partie 10 : LIMIT
+
+1. à quoi sert LIMIT ?
+
+imagine que notre magasin possède 10 000 produits.
+
+on exécute : 
+
+SELECT *
+FROM produits;
+
+sql va te renvoyer les 10 000 lignes. mais imagine qu'on veut afficher seulement 3 produits.
+
+c'est exactement le rôle de LIMIT.
+
+LIMIT permet de limiter le nombre de lignes affichées dans le résultat d'une requête.
+
+reprenons notre table produits comme exemple : 
+
+nom	        prix	stock
+ordinateur	800	    5
+souris	    25	    20
+clavier	    60	    12
+écran	    200	    8
+casque	    90	    15
+
+on écrit : 
+
+SELECT *
+FROM produits
+LIMIT 3;
+
+le résultat va avoir au maximum 3 lignes.
+
+attention, car sans ORDER BY, sql ne garantit pas quelles seront ces trois lignes. si tu veux choisir les trois premières selon un ordre précis, on doit le préciser.
+
+2. combiner ORDER BY et LIMIT
+
+c'est dans cette situation que LIMIT devient particulièrement intéressant.
+
+imagine qu'on veut retrouver les deux produits les plus chers. comment procéder ?
+
+on va utiliser deux instructions : 
+
+1. ORDER BY prix DESC pour classer les produits du plus cher au moins cher.
+2. LIMIT 2 pour ne conserver que les deux premiers résultats.
+
+SELECT nom, prix
+FROM produits
+ORDER BY prix DESC
+LIMIT 2;
+
+voici ce que sql va faire : 
+
+étape 1 : classer les produits du plus cher au moins cher
+
+nom	        prix
+ordinateur	800
+écran	    200
+casque	    90
+clavier	    60
+souris	    25
+
+étape 2 : conserver seulement les deux premiers produits
+
+nom	        prix
+ordinateur	800
+écran	    200
+
+ici, LIMIT 2 ne suffit pas à lui seul pour afficher les deux plus chers. c'est ORDER BY prix DESC qui classe les produits, puis LIMIT 2 qui limite le résultat à deux lignes.
+
+3. combiner WHERE, ORDER BY et LIMIT
+
+maintenant, imagine que tu veux afficher les deux produits les moins chers parmi ceux qui coûtent plus de 50 € : 
+
+SELECT nom, prix
+FROM produits
+WHERE prix > 50
+ORDER BY prix ASC
+LIMIT 2;
+
+sql va : 
+
+1. sélectionner les produits dont le prix dépasse 50 €;
+2. les classer du moins cher au plus cher;
+3. garder seulement les deux premiers.
+
+résultat : 
+
+nom	    prix
+clavier	60
+casque	90
+
+4. l'ordre des instructions sql
+
+quand tu écris une requête contenant toutes ces instructions, tu dois respecter cet ordre : 
+
+SELECT colonne
+FROM table
+WHERE condition
+ORDER BY colonne ASC
+LIMIT nombre;
+
+elles ne sont pas toutes obligatoires. on peut écrire une requête sans WHERE, sans ORDER BY ou sans LIMIT.
+
+à retenir : 
+
+LIMIT n affiche au maximum n lignes. avec ORDER BY, il permet de récupérer les premières lignes d'un classement précis.
+
+
+
+exercice bilan — chapitre 1 sql
+
+imaginons une librairie possédant les données suivantes dans une table livres : 
+
+id	titre	    genre	        prix	stock
+1	atlas	    science	        30	    8
+2	algebra	    science	        45	    3
+3	brume	    roman	        18	    12
+4	code	    informatique	50	    6
+5	cosmos	    science	        25	    14
+6	demain	    roman	        35	    5
+7	circuits	informatique	40	    9
+
+consigne : écris une requête sql pour chaque question sans regarder les exemples précédents.
+
+question 1 : affiche tous les genres de livres sans répétition.
+
+SELECT DISTINCT genre
+FROM livres;
+
+question 2 : affiche le titre et le prix des livres dont le titre commence par « c » et dont le prix est inférieur à 50 €, du plus cher au moins cher.
+
+SELECT titre, prix
+FROM livres
+WHERE titre LIKE 'c%' AND prix < 50
+ORDER BY prix DESC;
+
+question 3 : affiche le nombre de livres différents ayant au moins 8 unités en stock. appelle le résultat `nombre_livres`.
+
+SELECT COUNT(titre) as nombre_livres
+FROM livres
+WHERE stock >= 8;
+
+question 4 : affiche les titres et la valeur totale du stock des 2 livres ayant la plus grande valeur de stock. appelle la colonne calculée `valeur_stock` (valeur = prix × stock).
+
+SELECT titre, prix * stock AS valeur_stock
+FROM livres
+ORDER BY valeur_stock DESC
+LIMIT 2;
+
+question 5 : affiche le prix moyen des livres du genre `roman`. appelle le résultat `prix_moyen`.
+
+SELECT AVG(prix) AS prix_moyen
+FROM livres
+WHERE genre = 'roman';
+
