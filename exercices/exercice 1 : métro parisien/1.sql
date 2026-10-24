@@ -1,0 +1,2 @@
+SELECT station
+FROM metro
