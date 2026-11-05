@@ -1568,3 +1568,356 @@ comme les deux opérations précédentes, EXCEPT supprime les doublons par défa
 à retenir : 
 
 EXCEPT récupère les lignes présentes dans le premier résultat, mais absentes du deuxième.
+
+
+
+chapitre 2 — partie 8 : le produit cartésien
+
+jusqu'ici, nous avons étudié JOIN, LEFT JOIN, UNION, INTERSECT et EXCEPT.
+
+aujourd'hui, nous allons comprendre une opération essentielle pour les requêtes sur plusieurs tables qui est le produit cartésien.
+
+1. c'est quoi un produit cartésien ?
+
+imagine qu'on gère un magasin de vêtements.
+
+on dispose de deux tables :
+
+table couleurs
+
+couleur
+noir
+blanc
+
+table tailles
+
+taille
+s
+m
+l
+
+on veut connaître toutes les combinaisons possibles entre les couleurs et les tailles.
+
+réfléchissons sans SQL :
+- noir peut être associé à s, m et l;
+- blanc peut également être associé à s, m et l.
+
+on obtient donc :
+
+couleur	taille
+noir	  s
+noir	  m
+noir	  l
+blanc	  s
+blanc	  m
+blanc	  l
+
+c'est exactement ce qu'on appelle un produit cartésien.
+
+on associe chaque ligne de la première table à chacune des lignes de la deuxième table.
+
+2. comment l'écrire en SQL ?
+
+on utilise cette syntaxe :
+
+SELECT *
+FROM couleurs, tailles;
+
+remarque qu'il n'y a ni JOIN, ni ON, ni WHERE.
+
+on a simplement placé deux tables dans FROM, séparées par une virgule.
+
+SQL va produire toutes les combinaisons possibles de leurs lignes.
+
+3. combien de lignes obtient-on ?
+
+voici une règle très importante : 
+
+si la première table contient \(n\) lignes et que la deuxième en contient \(m\), le produit cartésien contient :
+
+\[
+\boxed{n\times m\text{ lignes}}
+\]
+
+dans notre exemple :
+- couleurs contient 2 lignes;
+- tailles contient 3 lignes.
+
+donc :
+
+\[
+2\times3=6
+\]
+
+le résultat contient donc 6 lignes.
+
+aussi, il faut faire attention car un produit cartésien involontaire peut produire énormément de résultats.
+
+4. quelle différence avec JOIN ?
+
+rappellons nous de cette requête : 
+
+SELECT e.nom, n.note
+FROM etudiants e
+JOIN notes n
+ON e.id = n.etudiant_id;
+
+ici, SQL ne combine pas n'importe quel étudiant avec n'importe quelle note.
+
+la condition ON précise quelles lignes doivent être associées.
+
+en revanche :
+
+SELECT *
+FROM etudiants, notes;
+
+produit toutes les associations possibles, même celles qui ne correspondent pas au bon étudiant.
+
+par exemple, si nous avons quatre étudiants et quatre notes, cela produit :
+
+\[
+4\times4=16\text{ lignes}
+\]
+
+alors que notre JOIN précédent n'en produisait que quatre.
+
+voilà la différence :
+
+produit cartésien	                    jointure interne
+associe toutes les lignes possibles	  associe les lignes respectant une condition
+ne nécessite aucune condition	        utilise une condition de correspondance
+peut générer énormément de lignes	    ne conserve que les associations qui correspondent
+
+à retenir : 
+
+un produit cartésien associe chaque ligne d'une table à toutes les lignes d'une autre. pour deux tables de \(n\) et \(m\) lignes, il produit \(n\times m\) lignes.
+
+
+
+chapitre 2 — partie 9 : clés étrangères et jointures avec WHERE
+
+1. pourquoi les tables sont-elles reliées ?
+
+imagine deux tables dans une entreprise : 
+
+table employes
+
+id	nom
+1	  sara
+2	  adam
+3	  ines
+
+table badges
+
+id	  employe_id	zone
+101	  1	          laboratoire
+102	  1	          bureaux
+103	  3	          accueil
+
+regardons les deux colonnes suivantes :
+- employes.id
+- badges.employe_id
+
+dans employes, chaque identifiant permet de retrouver un employé précis.
+
+dans badges, employe_id indique à quel employé appartient chaque badge.
+
+par exemple, le badge 101 appartient à sara parce que employe_id = 1.
+
+2. clé primaire et clé étrangère
+
+voici deux définitions importantes : 
+
+clé primaire : une colonne, ou un ensemble de colonnes, permettant d'identifier chaque ligne de manière unique.
+
+dans notre exemple, employes.id est la clé primaire de employes.
+
+clé étrangère : une colonne, ou un ensemble de colonnes, faisant référence à une clé primaire d'une autre table.
+
+ici, badges.employe_id est la clé étrangère qui fait référence à employes.id.
+
+3. faire une jointure avec WHERE
+
+on connait déjà cette syntaxe :
+
+SELECT e.nom, b.zone
+FROM employes e
+JOIN badges b
+ON e.id = b.employe_id;
+
+mais il y a également une autre manière d'obtenir le même résultat :
+
+SELECT e.nom, b.zone
+FROM employes e, badges b
+WHERE e.id = b.employe_id;
+
+les deux requêtes sont équivalentes ici.
+
+pourquoi ?
+
+revenons à notre produit cartésien : 
+
+FROM employes e, badges b
+
+produit toutes les combinaisons possibles.
+
+puis :
+
+WHERE e.id = b.employe_id
+
+élimine celles dont les identifiants ne correspondent pas.
+
+résultat :
+
+nom	  zone
+sara	laboratoire
+sara	bureaux
+ines	accueil
+
+adam n'apparaît pas, car il n'a aucun badge.
+
+différence entre les deux écritures : 
+
+avec JOIN	                        avec WHERE
+JOIN badges b ON ...	            FROM employes e, badges b WHERE ...
+condition indiquée dans ON	      condition indiquée dans WHERE
+syntaxe généralement préférable	  syntaxe classique à savoir lire
+
+il est recommandé de privilégier JOIN ... ON pour écrire tes jointures. mais maîtrise aussi la syntaxe avec WHERE.
+
+à retenir : 
+
+une clé étrangère permet de référencer une ligne d'une autre table. une jointure interne peut s'écrire avec JOIN ... ON, ou avec plusieurs tables dans FROM et une condition de correspondance dans WHERE.
+
+
+
+chapitre 2 — partie 10 : les jointures entre trois tables
+
+jusqu'ici, on a principalement travaillé avec deux tables.
+
+mais dans une application réelle, les informations peuvent être réparties dans trois, quatre ou davantage de tables.
+
+la bonne nouvelle est qu'on connait déjà presque tout ce qu'il faut pour les relier.
+
+1. le problème à résoudre
+
+imaginons qu'on développe une boutique en ligne.
+
+elle possède trois tables : 
+
+table clients
+
+id	nom
+1	  amina
+2	  louis
+3	  sara
+
+table produits
+
+id	nom	    prix
+10	souris	25
+11	clavier	60
+12	casque	90
+
+table commandes
+
+id	client_id	produit_id	quantite
+101	1	        10	        2
+102	3	        12	        1
+103	1	        11	        1
+104	2	        10	        1
+
+maintenant, imagine qu'on nous demande d'afficher le nom de chaque client, le produit qu'il a commandé et la quantité commandée.
+
+où trouver chaque information ? : 
+
+information	        table
+nom du client	      clients
+nom du produit	    produits
+quantité commandée	commandes
+
+il nous faut donc les trois tables.
+
+2. comprendre comment les tables sont reliées
+
+observons les deux colonnes suivantes dans commandes :
+- client_id : permet de retrouver le client dans clients.
+- produit_id : permet de retrouver le produit dans produits.
+
+par exemple, pour la commande 101 :
+- client_id = 1 correspond à amina.
+- produit_id = 10 correspond à souris.
+- quantite = 2.
+
+donc amina a commandé deux souris.
+
+3. écrire une jointure entre trois tables
+
+nous connaissons déjà cette première jointure :
+
+SELECT c.nom, co.quantite
+FROM clients c
+JOIN commandes co
+ON c.id = co.client_id;
+
+elle associe les commandes à leurs clients.
+
+mais il manque le nom du produit.
+
+il suffit donc d'ajouter une deuxième jointure :
+
+SELECT c.nom, p.nom, co.quantite
+FROM clients c
+JOIN commandes co
+    ON c.id = co.client_id
+JOIN produits p
+    ON co.produit_id = p.id;
+
+lisons cette requête progressivement :
+- FROM clients c : on part des clients.
+- JOIN commandes co : on récupère leurs commandes.
+- ON c.id = co.client_id : on associe chaque commande à son client.
+- JOIN produits p : on ajoute les informations sur les produits.
+- ON co.produit_id = p.id : on associe chaque commande au produit concerné.
+
+résultat :
+
+nom du client	nom du produit	quantite
+amina	        souris	        2
+sara	        casque	        1
+amina	        clavier	        1
+louis	        souris	        1
+
+4. pourquoi utilise-t-on c.nom et p.nom ?
+
+regardons les tables clients et produits.
+
+elles possèdent toutes les deux une colonne appelée nom.
+
+si on écrit simplement :
+
+SELECT nom
+
+SQL ne saura pas si on parle du nom du client ou de celui du produit : la référence est ambiguë.
+
+il faut donc préciser :
+- c.nom : le nom du client;
+- p.nom : le nom du produit.
+
+on peut même rendre le résultat plus clair avec AS :
+
+SELECT
+    c.nom AS client,
+    p.nom AS produit,
+    co.quantite
+FROM clients c
+JOIN commandes co
+    ON c.id = co.client_id
+JOIN produits p
+    ON co.produit_id = p.id;
+
+ici, on réutilise deux notions qu'on connait déjà : les jointures et les alias.
+
+à retenir : 
+
+pour relier trois tables, on peut utiliser deux JOIN successifs. chaque on précise comment la nouvelle table est associée aux précédentes.
