@@ -952,3 +952,619 @@ SELECT AVG(prix) AS prix_moyen
 FROM livres
 WHERE genre = 'roman';
 
+maintenant, attaquons le deuxième chapitre de sql qui porte sur les requêtes sur plusieurs tables.
+
+
+
+chapitre 2 — les jointures (JOIN)
+
+1. pourquoi avons-nous besoin de JOIN ?
+
+jusqu'ici, toutes nos requêtes sql utilisaient une seule table. mais, dans une véritable application, les informations sont souvent réparties dans plusieurs tables.
+
+imagine qu'on développe un site de commerce en ligne. on dispose de deux tables : 
+
+table clients
+
+id	nom
+1	amina
+2	louis
+3	sara
+
+table commandes
+
+id	    client_id	montant
+101	    1	        30
+102	    1	        50
+103	    3	        20
+
+remarque que dans la table commandes, nous n'avons pas directement le nom du client. nous avons seulement client_id.
+
+pourtant, nous on veut répondre à cette question : 
+
+quel client a passé quelle commande ?
+
+c'est exactement le rôle de JOIN.
+
+2. comment sql relie-t-il les deux tables ?
+
+regardons les colonnes suivantes : 
+
+![schéma relationnel clients et commandes](data:image/svg+xml;charset=utf-8,%3Csvg%20font-family%3D%22-apple-system-body%2C%20ui-sans-serif%2C%20-apple-system%2C%20system-ui%2C%20%26quot%3BSegoe%20UI%26quot%3B%2C%20Helvetica%2C%20%26quot%3BApple%20Color%20Emoji%26quot%3B%2C%20Arial%2C%20sans-serif%2C%20%26quot%3BSegoe%20UI%20Emoji%26quot%3B%2C%20%26quot%3BSegoe%20UI%20Symbol%26quot%3B%22%20font-weight%3D%22400%22%20data-d-component%3D%22svg%22%20fill%3D%22currentColor%22%20style%3D%22color%3Argb(13%2C%2013%2C%2013)%22%20viewBox%3D%220%200%20340%20155%22%20width%3D%22100%25%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%228%22%20y%3D%228%22%20width%3D%22137%22%20height%3D%22138%22%20rx%3D%229%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.08%22%20stroke%3D%22%2394a3b8%22%20stroke-opacity%3D%22.6%22%2F%3E%3Crect%20x%3D%22195%22%20y%3D%228%22%20width%3D%22137%22%20height%3D%22138%22%20rx%3D%229%22%20fill%3D%22%2364748b%22%20fill-opacity%3D%22.08%22%20stroke%3D%22%2394a3b8%22%20stroke-opacity%3D%22.6%22%2F%3E%3Cg%20font-size%3D%2213%22%20fill%3D%22currentColor%22%20text-anchor%3D%22middle%22%20font-weight%3D%22600%22%3E%3Ctext%20x%3D%2276%22%20y%3D%2229%22%3Eclients%3C%2Ftext%3E%3Ctext%20x%3D%22263%22%20y%3D%2229%22%3Ecommandes%3C%2Ftext%3E%3C%2Fg%3E%3Cg%20font-size%3D%2211%22%20fill%3D%22currentColor%22%3E%3Ctext%20x%3D%2220%22%20y%3D%2255%22%3Eid%3C%2Ftext%3E%3Ctext%20x%3D%2268%22%20y%3D%2255%22%3Enom%3C%2Ftext%3E%3Ctext%20x%3D%22205%22%20y%3D%2255%22%3Eclient_id%3C%2Ftext%3E%3Ctext%20x%3D%22283%22%20y%3D%2255%22%3Emontant%3C%2Ftext%3E%3Ctext%20x%3D%2223%22%20y%3D%2279%22%3E1%3C%2Ftext%3E%3Ctext%20x%3D%2268%22%20y%3D%2279%22%3Eamina%3C%2Ftext%3E%3Ctext%20x%3D%2223%22%20y%3D%22104%22%3E2%3C%2Ftext%3E%3Ctext%20x%3D%2268%22%20y%3D%22104%22%3Elouis%3C%2Ftext%3E%3Ctext%20x%3D%2223%22%20y%3D%22129%22%3E3%3C%2Ftext%3E%3Ctext%20x%3D%2268%22%20y%3D%22129%22%3Esara%3C%2Ftext%3E%3Ctext%20x%3D%22218%22%20y%3D%2279%22%3E1%3C%2Ftext%3E%3Ctext%20x%3D%22289%22%20y%3D%2279%22%3E30%3C%2Ftext%3E%3Ctext%20x%3D%22218%22%20y%3D%22104%22%3E1%3C%2Ftext%3E%3Ctext%20x%3D%22289%22%20y%3D%22104%22%3E50%3C%2Ftext%3E%3Ctext%20x%3D%22218%22%20y%3D%22129%22%3E3%3C%2Ftext%3E%3Ctext%20x%3D%22289%22%20y%3D%22129%22%3E20%3C%2Ftext%3E%3C%2Fg%3E%3Cpath%20d%3D%22M32%2074%20C166%2053%2C%20164%2062%2C%20214%2074%22%20fill%3D%22none%22%20stroke%3D%22%230D9488%22%20stroke-width%3D%222.2%22%20stroke-dasharray%3D%225%204%22%2F%3E%3Cpath%20d%3D%22M32%2074%20C165%2080%2C%20171%2091%2C%20214%20100%22%20fill%3D%22none%22%20stroke%3D%22%230D9488%22%20stroke-width%3D%222.2%22%20stroke-dasharray%3D%225%204%22%2F%3E%3Cpath%20d%3D%22M32%20125%20C162%20145%2C%20171%20143%2C%20214%20125%22%20fill%3D%22none%22%20stroke%3D%22%230D9488%22%20stroke-width%3D%222.2%22%20stroke-dasharray%3D%225%204%22%2F%3E%3C%2Fsvg%3E)
+
+par exemple, la commande 101 possède client_id = 1. dans la table clients, l'identifiant 1 correspond à amina. nous pouvons donc associer cette commande à amina.
+
+et puisque la commande 102 possède également client_id = 1, elle appartient aussi à amina.
+
+3. notre première jointure
+
+voici comment on écrit cette association en sql : 
+
+SELECT clients.nom, commandes.montant
+FROM clients
+JOIN commandes
+ON clients.id = commandes.client_id;
+
+décomposons chaque instruction : 
+
+- SELECT clients.nom, commandes.montant : affiche le nom du client et le montant de la commande.
+- FROM clients : partir de la table clients.
+- JOIN commandes : relier la table commandes.
+- ON clients.id = commandes.client_id : précise comment les deux tables sont reliées.
+
+il est important d'écrire clients.nom plutôt que simplement nom car, lorsque nous utilisons plusieurs tables, nous devons préciser à sql de quelle table provient chaque colonne.
+
+résultat : 
+
+nom	    montant
+amina	30
+amina	50
+sara	20
+
+remarques deux choses : 
+
+1. amina apparaît deux fois. c'est normal, car elle a passé deux commandes.
+2. louis n'apparaît pas. tout simplement parce qu'il n'a aucune commande dans notre table commandes.
+
+le JOIN qu'on vient d'utiliser est une jointure interne. aussi appelée inner join. elle conserve les associations qui existent dans les deux tables.
+
+à retenir : 
+
+- JOIN permet de combiner des informations de plusieurs tables. ON indique la condition qui relie leurs lignes.
+
+
+
+chapitre 2 — partie 2 : écrire une jointure
+
+jusqu'ici, on a compris pourquoi et comment on utilise JOIN. maintenant, on va apprendre à en écrire une sans modèle.
+
+1. la structure d'une jointure
+
+SELECT table1.colonne, table2.colonne
+FROM table1
+JOIN table2
+ON table1.id = table2.table1_id;
+
+- SELECT : quelles informations veux-tu afficher ?
+- FROM : quelle est ta première table ?
+- JOIN : quelle autre table veux-tu relier ?
+- ON : quelles colonnes permettent d'associer les lignes ?
+
+les noms table1, table2 et table1_id sont seulement des exemples. dans une vraie requête, tu utilises les noms de tes tables et de leurs colonnes.
+
+prenons un nouvel exemple : 
+
+table etudiants
+
+id	nom
+1	paul
+2	amina
+3	lucas
+
+table notes
+
+id	    etudiant_id	    matiere	    note
+101	    1	            maths	    15
+102	    2	            physique	17
+103	    1	            physique	12
+104	    3	            maths	    14
+
+dans la table notes, la colonne etudiant_id indique à quel étudiant appartient chaque note.
+
+par exemple : 
+
+- etudiant_id = 1 correspond à paul.
+- etudiant_id = 2 correspond à amina.
+- etudiant_id = 3 correspond à lucas.
+
+
+on veut afficher pour chaque note, le nom de l'etudiant, la matiere et la note obtenue : 
+
+SELECT etudiants.nom, notes.matiere, notes.note
+FROM etudiants
+JOIN notes
+ON etudiants.id = notes.etudiant_id;
+
+résultat : 
+
+nom	    matiere	    note
+paul	maths	    15
+amina	physique	17
+paul	physique	12
+lucas	maths	    14
+
+chapitre 2 — partie 3 : les alias de tables
+
+AS ne sert pas seulement à renommer une colonne dans le résultat. il existe une autre utilisation très pratique dans notre cas.
+
+c'est donner un nom plus court à une table pendant une requête.
+
+1. pourquoi utiliser des alias ?
+
+regardons ensemble cette requête : 
+
+SELECT etudiants.nom, notes.matiere, notes.note
+FROM etudiants
+JOIN notes
+ON etudiants.id = notes.etudiant_id;
+
+cette requête est correcte mais nous devons écrire etudiants et notes plusieurs fois.
+
+on peut raccourcir en faisant : 
+
+SELECT e.nom, n.matiere, n.note
+FROM etudiants as e
+JOIN notes as n
+ON e.id = n.etudiant_id;
+
+ici : 
+
+- etudiants AS e : dans cette requête, e désigne la table etudiants.
+- notes AS n : dans cette requête, n désigne la table notes.
+- e.nom : la colonne nom de la table etudiants.
+- n.matiere : la colonne matiere de la table notes.
+
+2. attention à cette différence
+
+on connait deux types d'alias maintenant : 
+
+type d'alias	    exemple	                        rôle
+alias de colonne	prix * stock AS valeur_stock	donne un nom au résultat d'un calcul
+alias de table	    etudiants AS e	                donne un nom court à une table dans la requête
+
+on peut même utiliser les deux dans une même requête.
+
+il est important de savoir que AS est facultatif pour les alias de table dans sql. FROM etudiants e est aussi valide.
+
+à retenir : 
+
+un alias de table raccourcit son nom dans une requête. il ne modifie pas la table dans la base de données.
+
+
+
+chapitre 2 — partie 4 : LEFT JOIN
+
+1. le problème avec JOIN
+
+revenons sur notre exemple avec les étudiants et leurs notes. reprenons les deux tables mais ajoutons une nouvelle étudiante qui se nomme ines.
+
+table etudiants
+
+id	nom
+1	paul
+2	amina
+3	lucas
+4	ines
+
+table notes
+
+id	    etudiant_id	    matiere	    note
+101	    1	            maths	    15
+102	    2	            physique	17
+103	    1	            physique	12
+104	    3	            maths	    14
+
+remarque que ines n'a pas de note enregistrée.
+
+exécutons cette requête qu'on connait déjà : 
+
+SELECT e.nom, n.matiere, n.note
+FROM etudiants e
+JOIN notes n
+ON e.id = n.etudiant_id;
+
+résultat :
+
+nom	    matiere	    note
+paul	maths	    15
+amina	physique	17
+paul	physique	12
+lucas	maths	    14
+
+ines n'apparaît pas ici car aucune ligne de notes ne possède etudiant_id = 4.
+
+c'est normal car JOIN qui signifie INNER JOIN conserve seulement les associations trouvées dans les deux tables.
+
+mais imagine qu'on veut afficher tous les étudiants et même ceux qui n'ont pas de note.
+
+comment faire alors ?
+
+2. la solution : LEFT JOIN
+
+regardons cette requête :
+
+SELECT e.nom, n.matiere, n.note
+FROM etudiants e
+LEFT JOIN notes n
+ON e.id = n.etudiant_id;
+
+remarque qu'on a simplement remplacé JOIN par LEFT JOIN.
+
+résultat :
+
+nom	    matiere	    note
+paul	maths	    15
+paul	physique	12
+amina	physique	17
+lucas	maths	    14
+ines	NULL	    NULL
+
+cette fois ines apparaît. tout simplement parce que LEFT JOIN conserve toutes les lignes de la table située à gauche de la jointure, ici etudiants, même lorsqu'il n'existe aucune correspondance dans notes.
+
+3. que signifie NULL ?
+
+observe la dernière ligne : 
+
+nom	    matiere	note
+ines	NULL	NULL
+
+NULL signifie que la valeur est absente ou inconnue dans le résultat.
+
+ici, ines n'a aucune ligne correspondante dans notes. sql remplit donc ces colonnes avec NULL.
+
+attention, car NULL n'est pas égal à 0. une note de 0 serait une vraie note enregistrée. NULL signifie qu'aucune note n'est disponible.
+
+4. pourquoi appelle-t-on cela LEFT JOIN ?
+
+regardons : 
+
+FROM etudiants e
+LEFT JOIN notes n
+
+- etudiants --> table de gauche --> toutes les lignes sont conservées
+
+- notes --> table de droite --> lignes associées si elles existent
+
+la table etudiants est celle qui est située à gauche de LEFT JOIN. c'est donc elle qui garde toutes les lignes.
+
+5. JOIN contre LEFT JOIN
+
+JOIN (INNER JOIN) : 
+
+- conserve uniquement les lignes qui ont une correspondance;
+- ines n'est pas incluse;
+- 4 lignes dans notre exemple
+
+LEFT JOIN : 
+
+- conserve toutes les lignes de la table de gauche;
+- ines est incluse;
+- 5 lignes dans notre exemple
+
+à retenir : 
+
+LEFT JOIN conserve toutes les lignes de la table de gauche même si il y a aucune correspondance dans la table de droite. les colonnes sans correspondance prennent alors la valeur NULL.
+
+
+
+chapitre 2 — partie 5 : UNION
+
+1. pourquoi utilise-t-on UNION ?
+
+imaginons qu'on veut développer une application de vente de jeux vidéo.
+
+on possède deux magasins, chacun avec sa propre table.
+
+table magasin_lille
+jeu
+minecraft
+fifa
+gta
+
+table magasin_paris
+jeu
+fortnite
+gta
+valorant
+
+on connait déjà cette requête :
+
+SELECT jeu
+FROM magasin_lille;
+
+elle affiche les trois jeux du magasin de lille.
+
+mais imagine qu'on veut obtenir la liste de tous les jeux proposés par les deux magasins.
+
+on pourrait exécuter deux requêtes séparément, mais ce n'est pas très pratique.
+
+la solution est UNION
+
+2. comment fonctionne UNION ?
+
+SELECT jeu
+FROM magasin_lille;
+
+UNION
+
+SELECT jeu
+FROM magasin_paris;
+
+observons la structure :
+- première requête SELECT : les jeux de lille;
+- UNION : réunir les deux résultats;
+- deuxième requête SELECT : les jeux de paris.
+
+voici ce qui se passe :
+
+magasin_lille   magasin_paris
+
+minecraft       fortnite
+
+fifa            gta
+
+gta             valorant
+
+union
+  |
+  |
+  v
+
+résultat : 
+
+minecraft
+
+fifa
+
+gta
+
+fortnite
+
+valorant
+
+remarque importante : où est passé le deuxième gta ?
+
+les deux magasins proposent gta, mais celui-ci apparaît une seule fois dans le résultat.
+
+pourquoi ?
+
+tout simplement parce que UNION élimine automatiquement les doublons.
+
+tu te souviens de DISTINCT ? c'est le même principe d'élimination des doublons, mais cette fois sur le résultat combiné des deux requêtes.
+
+3. les conditions pour utiliser UNION
+
+les deux tables doivent avoir le même schéma relationnel. pour nos requêtes, retiens notamment que les résultats doivent avoir des colonnes compatibles.
+
+par exemple : 
+
+SELECT jeu, prix
+FROM magasin_lille
+
+UNION
+
+SELECT jeu, prix
+FROM magasin_paris;
+
+cela fonctionne si les deux tables possèdent jeu et prix avec des types compatibles.
+
+en revanche :
+
+SELECT jeu, prix
+FROM magasin_lille
+
+UNION
+
+SELECT jeu
+FROM magasin_paris;
+
+est incorrect la première requête retourne deux colonnes, tandis que la deuxième n'en retourne qu'une.
+
+les deux résultats doivent avoir le même nombre de colonnes, dans un ordre compatible, avec des types de données compatibles.
+
+autre précision : quand il y a plusieurs colonnes, UNION supprime les doublons sur la ligne entière, pas simplement sur une colonne.
+
+4. différence entre JOIN et UNION
+
+c'est le point le plus important de cette leçon.
+
+JOIN	                                                            UNION
+associe les informations de plusieurs tables selon une condition	réunit les lignes de plusieurs résultats
+permet d'ajouter des colonnes provenant d'autres tables	            conserve le même nombre de colonnes
+utilise généralement ON	                                            s'écrit entre deux requêtes SELECT
+
+une image mentale simple :
+- JOIN sert à mettre les informations côte à côte en reliant des lignes correspondantes;
+- UNION sert à empiler deux ensembles de résultats et retirer les doublons.
+
+à retenir : 
+
+UNION réunit les résultats de deux requêtes SELECT, supprime les doublons et exige des colonnes compatibles.
+
+
+
+chapitre 2 — partie 6 : INTERSECT
+
+1. à quoi sert INTERSECT ?
+
+on vient d'apprendre que UNION permet de réunir les membres de deux clubs.
+
+mais imaginons maintenant qu'on veut retrouver uniquement les personnes qui appartiennent aux deux clubs en même temps.
+
+reprenons les tables.
+
+table club_a
+
+membre
+amina
+paul
+sara
+
+table club_b
+
+membre
+paul
+lucas
+ines
+
+regarde bien : paul est le seul membre présent dans les deux tables.
+
+c'est exactement ce que permet INTERSECT.
+
+2. comment fonctionne INTERSECT ?
+
+SELECT membre
+FROM club_a
+
+INTERSECT
+
+SELECT membre
+FROM club_b;
+
+SQL récupère les membres du premier résultat, puis ceux du deuxième, et conserve uniquement ceux qui sont présents dans les deux résultats.
+
+résultat :
+
+membre
+paul
+
+INTERSECT retourne uniquement les lignes communes aux deux résultats.
+
+3. quelle différence entre UNION et INTERSECT ?
+
+avec exactement les mêmes tables :
+
+opération	résultat
+UNION	    amina, paul, sara, lucas, ines
+INTERSECT	paul
+
+c'est donc très différent.
+
+UNION signifie présent dans le premier ou le deuxième résultat, éventuellement les deux.
+
+INTERSECT signifie présent dans le premier et le deuxième résultat.
+
+les deux opérations suppriment les doublons par défaut.
+
+comme pour UNION, les deux requêtes doivent retourner le même nombre de colonnes, avec des types compatibles.
+
+à retenir : 
+
+- INTERSECT conserve uniquement les lignes présentes dans les deux résultats.
+
+
+
+chapitre 2 — partie 7 : EXCEPT
+
+nous avons étudié deux opérations :
+- union : les éléments présents dans au moins une des deux tables;
+- intersect : les éléments présents dans les deux tables.
+
+il reste une troisième opération importante qui est la différence entre deux ensembles.
+
+1. comprendre EXCEPT
+
+imagine qu'on organise deux activités dans ton école.
+
+table basket
+
+nom
+paul
+amina
+lucas
+ines
+
+table football
+
+nom
+lucas
+sara
+paul
+adam
+
+on veut répondre à cette question :
+
+quelles personnes pratiquent le basket, mais pas le football ?
+
+observons les données : 
+- paul pratique les deux sports --> on l'exclut.
+- amina pratique seulement le basket --> on la conserve.
+- lucas pratique les deux sports --> on l'exclut.
+- ines pratique seulement le basket --> on la conserve.
+
+résultat attendu :
+
+nom
+amina
+ines
+
+pour obtenir cela, on utilise EXCEPT.
+
+2. la requête SQL
+
+SELECT nom
+FROM basket
+
+EXCEPT
+
+SELECT nom
+FROM football;
+
+comment SQL raisonne-t-il ?
+
+il prend les noms présents dans le premier résultat, puis retire ceux qui apparaissent également dans le deuxième.
+
+3. attention car l'ordre change le résultat !
+
+c'est la principale difficulté avec EXCEPT.
+
+comparons ces deux requêtes : 
+
+requête a
+
+SELECT nom 
+FROM basket
+
+EXCEPT
+
+SELECT nom 
+FROM football;
+
+résultat : amina, ines.
+
+
+requête b
+
+SELECT nom 
+FROM football
+
+EXCEPT
+
+SELECT nom 
+FROM basket;
+
+résultat : sara, adam.
+
+pourquoi les résultats sont-ils différents ?
+
+parce que EXCEPT signifie "prendre les éléments du premier résultat qui n'existent pas dans le deuxième".
+
+si tu inverses les deux requêtes, tu inverses le sens de la différence.
+
+contrairement à UNION et INTERSECT, l'ordre des deux résultats est donc essentiel.
+
+comme les deux opérations précédentes, EXCEPT supprime les doublons par défaut et nécessite des colonnes compatibles.
+
+à retenir : 
+
+EXCEPT récupère les lignes présentes dans le premier résultat, mais absentes du deuxième.

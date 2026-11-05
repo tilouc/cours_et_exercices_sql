@@ -1,0 +1,2 @@
+SELECT DISTINCT nom
+FROM concours;
