@@ -1921,3 +1921,120 @@ ici, on réutilise deux notions qu'on connait déjà : les jointures et les alia
 à retenir : 
 
 pour relier trois tables, on peut utiliser deux JOIN successifs. chaque on précise comment la nouvelle table est associée aux précédentes.
+
+
+
+chapitre 2 — partie 11 : colonnes ambiguës et auto-jointures
+
+1. qu'est-ce qu'une colonne ambiguë ?
+
+imaginons deux tables.
+
+table livres
+
+id	titre	pages
+1	atlas	200
+2	brume	200
+3	cosmos	350
+
+table auteurs
+
+id	nom
+1	sara
+2	paul
+
+remarque que les deux tables possèdent une colonne appelée id.
+
+si on écrit :
+
+SELECT id
+FROM livres, auteurs;
+
+SQL ne sait pas de quel id on parle.
+
+livres.id ou auteurs.id ?
+
+c'est ce qu'on appelle une ambiguïté.
+
+la solution consiste à préciser la table :
+
+SELECT livres.id
+FROM livres, auteurs;
+
+ou à utiliser un alias :
+
+SELECT l.id
+FROM livres l, auteurs a;
+
+2. qu'est-ce qu'une auto-jointure ?
+
+jusqu'ici, on reliait deux tables différentes.
+
+mais savais-tu qu'on pouvait relier une table à elle-même ?
+
+on appelle une auto-jointure (SELF JOIN).
+
+reprenons la table livres comme exemple : 
+
+id	titre	pages
+1	atlas	200
+2	brume	200
+3	cosmos	350
+
+imagine qu'on veut retrouver toutes les paires de livres qui possèdent le même nombre de pages.
+
+nous avons besoin de comparer les livres entre eux.
+
+pour cela, nous utilisons deux fois la même table, avec deux alias différents : 
+
+SELECT l1.titre, l2.titre
+FROM livres l1
+JOIN livres l2
+ON l1.pages = l2.pages;
+
+décomposons :
+- livres l1 : première utilisation de la table;
+- JOIN livres l2 : deuxième utilisation de cette même table;
+- ON l1.pages = l2.pages : associer les livres qui ont le même nombre de pages.
+
+nous utilisons l1 et l2 pour que SQL sache à quelle utilisation de la table nous faisons référence.
+
+résultat : 
+
+l1.titre	l2.titre
+atlas	    atlas
+atlas	    brume
+brume	    atlas
+brume	    brume
+cosmos	    cosmos
+
+remarque quelque chose d'étrange : un livre peut être associé à lui-même !
+
+c'est normal. par exemple, atlas possède le même nombre de pages que atlas.
+
+et les associations atlas–brume et brume–atlas apparaissent toutes les deux.
+
+c'est le comportement de la requête telle que nous l'avons écrite.
+
+3. comment obtenir uniquement les paires de livres différents ?
+
+si notre but est de retrouver chaque paire de livres différents une seule fois, on peut ajouter une condition supplémentaire :
+
+SELECT l1.titre, l2.titre
+FROM livres l1
+JOIN livres l2
+ON l1.pages = l2.pages
+AND l1.id < l2.id;
+
+ici, l1.id < l2.id permet d'éviter :
+- qu'un livre soit associé à lui-même;
+- qu'une même paire apparaisse deux fois dans les deux sens.
+
+résultat :
+
+l1.titre	l2.titre
+atlas	    brume
+
+à retenir : 
+
+une auto-jointure relie une table à elle-même. on utilise deux alias distincts pour distinguer les deux utilisations de cette table.
