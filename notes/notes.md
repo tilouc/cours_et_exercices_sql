@@ -2038,3 +2038,130 @@ atlas	    brume
 à retenir : 
 
 une auto-jointure relie une table à elle-même. on utilise deux alias distincts pour distinguer les deux utilisations de cette table.
+
+
+
+chapitre 3 — partie 1 : les agrégations par groupe avec GROUP BY
+
+nous avons vu les fonctions d'agrégation par défaut (SUM, MAX, MIN, AVG, COUNT) qui s'appliquent sur tous les enregistrements de la table. maintenant, nous voulons aller plus loin.
+
+1. le problème à résoudre
+
+imaginons une table eleves :
+
+nom    classe     note
+paul   mpsi       12
+sara   mpsi       16
+lucas  pcsi       10
+amina  pcsi       14
+adam   pcsi       15
+
+si on nous demande : « quelle est la note moyenne de chaque classe ? », sans SQL, on va regrouper les élèves par classe, puis calculer la moyenne pour chacun de ces groupes.
+
+- mpsi : moyenne de 12 et 16 = 14.
+- pcsi : moyenne de 10, 14 et 15 = 13.
+
+2. comment l'écrire en SQL ?
+
+il est possible de séparer les enregistrements en groupes avec GROUP BY, pour ensuite appliquer une fonction à chaque groupe.
+
+SELECT classe, AVG(note)
+FROM eleves
+GROUP BY classe;
+
+résultat :
+
+classe  avg(note)
+mpsi    14
+pcsi    13
+
+tu peux même calculer plusieurs choses en même temps sur chaque classe, comme la moyenne, la note maximum et la note minimum :
+
+SELECT classe, AVG(note), MAX(note), MIN(note)
+FROM eleves
+GROUP BY classe;
+
+3. la règle d'or du GROUP BY
+
+c'est le point le plus important de ce chapitre :
+avec un GROUP BY a, il ne faut pas afficher d'attribut, à part a.
+
+si on écrit :
+
+SELECT classe, nom, AVG(note)
+FROM eleves
+GROUP BY classe;
+
+c'est une erreur car SQL a regroupé la classe mpsi sur une seule ligne. il ne sait donc pas quel nom afficher sur cette ligne unique (paul ou sara ?). il ne faut donc afficher que la colonne qui sert au regroupement, accompagnée de tes calculs.
+
+à retenir : 
+
+GROUP BY permet de créer des groupes pour effectuer des calculs sur chacun d'eux. dans le SELECT, tu ne peux mettre que la colonne servant au regroupement et tes fonctions d'agrégation.
+
+
+
+chapitre 3 — partie 2 : utiliser HAVING pour filtrer les groupes
+
+on sait filtrer les lignes avec WHERE, et on sait regrouper des lignes avec GROUP BY.
+
+maintenant, comment fait-on pour filtrer les groupes eux-mêmes ?
+
+1. le problème à résoudre
+
+reprenons notre table eleves :
+
+nom     classe      note
+paul    mpsi        12
+sara    mpsi        16
+lucas   pcsi        10
+amina   pcsi        14
+adam    csi         15
+
+si l'on te demande : « quelles sont les classes qui ont une moyenne supérieure ou égale à 14 ? »
+
+si tu utilises WHERE, SQL va essayer de l'appliquer à chaque ligne individuelle, avant même de faire les moyennes. WHERE ne peut pas voir le résultat d'une fonction d'agrégation.
+
+2. comment l'écrire en SQL ?
+
+c'est ici qu'intervient HAVING. il s'utilise juste après GROUP BY et permet d'appliquer une condition sur le résultat d'une fonction d'agrégation.
+
+SELECT classe, avg(note)
+FROM eleves
+GROUP BY classe
+HAVING AVG(note) >= 14;
+
+le fonctionnement de SQL est précis :
+
+- il regroupe les élèves par classe;
+- il calcule la moyenne de chaque classe (14 pour mpsi, 13 pour pcsi).
+- il applique la condition having AVG(note) >= 14 sur ces moyennes.
+- il rejette le groupe pcsi.
+
+résultat :
+
+classe  avg(note)
+mpsi    14
+
+3. quelle est la différence entre WHERE et HAVING ?
+
+c'est une question classique.
+
+- WHERE s'applique aux lignes individuelles, avant le regroupement.
+- HAVING s'applique aux groupes agrégés, après le regroupement.
+
+on peut même utiliser les deux dans la même requête.
+
+par exemple : « affiche la moyenne des classes, mais en ne comptant que les notes supérieures à 10, et ne garde que les classes dont cette nouvelle moyenne est de 15. »
+
+SELECT classe, avg(note)
+FROM eleves
+WHERE note > 10
+GROUP BY classe
+HAVING AVG(note) = 15;
+
+ici, SQL filtre d'abord les mauvaises notes avec WHERE, fait ses groupes, calcule la moyenne, puis utilise HAVING pour ne garder que l'excellence.
+
+à retenir : 
+
+HAVING est le WHERE des groupes. il s'utilise obligatoirement après GROUP BY et permet de filtrer sur des fonctions d'agrégation.
+
