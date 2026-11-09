@@ -2165,3 +2165,300 @@ ici, SQL filtre d'abord les mauvaises notes avec WHERE, fait ses groupes, calcul
 
 HAVING est le WHERE des groupes. il s'utilise obligatoirement après GROUP BY et permet de filtrer sur des fonctions d'agrégation.
 
+
+
+chapitre 4 — partie 1 : les SELECT imbriqués
+
+nous entamons la dernière notion majeure du cours.
+
+jusqu'ici, nous avons comparé des données avec des valeurs fixes écrites "à la main" : WHERE note >= 14, WHERE agence = 'nasa', etc.
+
+mais que faire si la valeur à comparer n'est pas connue à l'avance et doit elle-même être calculée ?
+
+1. le problème à résoudre
+
+imaginons une table eleves :
+
+nom     note
+alice   12
+bob     19
+charlie 14
+david   19
+
+si l'on te demande : « quels sont les élèves qui ont la note maximum ? »
+
+
+
+chapitre 4 — partie 1 : le principe des SELECT imbriqués
+
+jusqu’ici, chaque requête faisait un seul SELECT. aujourd’hui, on va apprendre à mettre un SELECT à l’intérieur d’un autre SELECT.
+
+1. le problème à résoudre
+
+imagine qu'on gère les résultats d’un contrôle.
+
+table eleve
+
+nom	    note
+adam	14
+lucas	9
+paul	12
+sara	16
+ines	11
+
+on nous demande : « quel est le nom de l’élève qui a la meilleure note ? »
+
+réfléchissons d’abord sans SQL. on fera naturellement deux étapes :
+
+1. chercher la meilleure note : 16;
+2. chercher qui a 16 : sara.
+
+2. pourquoi la solution « évidente » ne marche pas
+
+le premier réflexe serait d’écrire :
+
+SELECT nom
+FROM eleve
+WHERE note = MAX(note);
+
+ça renvoie une erreur. pourquoi ?
+
+on l’a vu au chapitre 3 : le WHERE regarde les lignes une par une. quand il examine la ligne d’adam, il ne connaît que la note d’adam, donc il est incapable de calculer le maximum de toute la table.
+
+les fonctions d’agrégation (MAX, MIN, AVG…) ne s’utilisent pas directement dans un WHERE.
+
+3. la solution : une requête dans la requête
+
+on fait les deux étapes séparément, en mettant la première entre parenthèses :
+
+SELECT nom
+FROM eleve
+WHERE note = (SELECT MAX(note) FROM eleve);
+
+lisons cette requête de l’intérieur vers l’extérieur :
+
+1. (SELECT MAX(note) FROM eleve) : la sous-requête. SQL l’exécute en premier et elle renvoie une seule valeur, 16.
+2. SQL remplace alors la parenthèse par ce résultat. la requête devient : WHERE note = 16.
+3. SELECT nom FROM eleve WHERE note = 16 : on cherche l’élève qui a 16.
+
+résultat :
+
+nom
+sara
+
+4. un deuxième exemple pour bien voir le modèle
+
+table joueurs
+
+nom	    age
+adam	20
+lucas	21
+paul	19
+sara	22
+
+question : « qui est le joueur le plus jeune ? »
+
+SELECT nom
+FROM joueurs
+WHERE age = (SELECT MIN(age) FROM joueurs);
+
+1. la sous-requête (SELECT MIN(age) FROM joueurs) renvoie 19;
+2. la requête devient WHERE age = 19;
+3. résultat : paul.
+
+ici, la structure est la même que pour sara. seuls la table, la colonne et la fonction changent :
+
+SELECT colonne_a_afficher
+FROM table
+WHERE colonne = (SELECT FONCTION(colonne) FROM table);
+
+à retenir : 
+
+une sous-requête est un SELECT entre parenthèses, exécuté en premier. quand elle renvoie une seule valeur, on peut l’utiliser comme un simple nombre dans un WHERE.
+
+
+
+chapitre 4 — partie 2 : comparer à une moyenne
+
+1. le problème à résoudre
+
+imagine qu'on gère une équipe de vendeurs.
+
+table vendeurs
+
+nom	    ventes
+amina	30
+louis	50
+sara	20
+paul	60
+
+on nous demande : « quels vendeurs ont vendu plus que la moyenne ? »
+
+réfléchissons sans SQL :
+
+1. on calcule la moyenne : (30 + 50 + 20 + 60) / 4 = 40;
+2. on garde ceux qui ont plus de 40 : louis et paul.
+
+encore deux étapes : le calcul, puis la comparaison.
+
+2. la requête SQL
+
+SELECT nom
+FROM vendeurs
+WHERE ventes > (SELECT AVG(ventes) FROM vendeurs);
+
+lisons de l’intérieur vers l’extérieur :
+
+1. (SELECT AVG(ventes) FROM vendeurs) renvoie 40;
+2. la requête devient WHERE ventes > 40;
+3. SQL garde les vendeurs qui dépassent 40.
+
+résultat :
+
+nom
+louis
+paul
+
+remarquons que cette fois, le résultat contient plusieurs lignes. la sous-requête, elle, renvoie toujours une seule valeur qui est 40. c’est la requête principale qui peut renvoyer plusieurs lignes.
+
+3. comparer un calcul à une moyenne
+
+table pays
+
+nom	    pib	population
+norvia	600	20
+kalos	200	10
+merin	900	30
+tobia	100	10
+
+question : « quels pays ont un pib par habitant supérieur à la moyenne ? »
+
+le pib par habitant, c’est pib / population :
+
+nom	    pib / population
+norvia	30
+kalos	20
+merin	30
+tobia	10
+
+moyenne : (30 + 20 + 30 + 10) / 4 = 22,5
+
+SELECT nom
+FROM pays
+WHERE (pib / population) > (SELECT AVG(pib / population) FROM pays);
+
+décomposons :
+
+1. (SELECT AVG(pib / population) FROM pays) calcule le pib par habitant de chaque pays, puis en fait la moyenne : 22,5;
+2. à gauche, (pib / population) est calculé pour chaque ligne;
+3. on garde les pays au-dessus de 22,5.
+
+résultat : norvia et merin.
+
+à retenir : 
+
+une sous-requête peut se comparer avec =, >, <, >=… et elle peut contenir un calcul. elle renvoie une seule valeur, mais la requête principale peut renvoyer plusieurs lignes.
+
+
+
+chapitre 4 — partie 3 : une autre solution sans sous-requête
+
+peut-on trouver l’élève qui a la meilleure note sans SELECT imbriqué ?
+
+oui. et on connait déjà les outils : ils viennent du chapitre 1.
+
+reprenons le problème de la partie 1 : 
+
+table eleve
+
+nom	    note
+adam	14
+lucas	9
+paul	12
+sara	16
+ines	11
+
+réfléchissons sans SQL : si on range les élèves de la meilleure note à la moins bonne, celui qui a la meilleure note est le premier de la liste.
+
+1. la requête sql
+
+SELECT nom
+FROM eleve
+ORDER BY note DESC
+LIMIT 1;
+
+décomposons :
+
+1. SELECT nom FROM eleve : on prend les noms des élèves;
+2. ORDER BY note DESC : on les trie de la meilleure note à la moins bonne;
+3. LIMIT 1 : on ne garde que la première ligne.
+
+après le tri, la table ressemble à ça :
+
+nom	    note
+sara	16
+adam	14
+paul	12
+ines	11
+lucas	9
+
+LIMIT 1 ne garde que la première ligne.
+
+résultat : sara, comme avec la sous-requête.
+
+3. les deux solutions ne sont pas toujours équivalentes
+
+imaginons qu’adam ait lui aussi 16 :
+
+nom	    note
+adam	16
+lucas	9
+paul	12
+sara	16
+ines	11
+
+- avec la sous-requête, WHERE note = (SELECT MAX(note) FROM eleve) devient WHERE note = 16. on obtient adam et sara, c’est-à-dire tous les ex-aequo.
+- avec ORDER BY … LIMIT 1, on ne garde qu’une seule ligne. donc un seul des deux, et rien ne garantit lequel.
+
+                sous-requête	            order by + limit 1
+sans ex-aequo	même résultat	            même résultat
+avec ex-aequo	renvoie tous les meilleurs	renvoie un seul
+
+à retenir : 
+
+pour trouver le maximum ou le minimum, ORDER BY … DESC LIMIT 1 remplace la sous-requête. mais en cas d’égalité, seule la sous-requête renvoie tous les ex-aequo.
+
+
+
+chapitre 4 — partie 4 : sous-requête qui renvoie un texte, et l’auto-jointure
+
+jusqu’ici, la sous-requête renvoyait toujours un nombre (un max, un min, une moyenne). mais elle peut aussi renvoyer un texte. on peut obtenir le même résultat avec une auto-jointure, qu'on connait déjà depuis le chapitre 2.
+
+1. le problème à résoudre
+
+table planete
+
+nom	        etoile
+terre	    soleil
+mars	    soleil
+proxima b	proxima centauri
+proxima d	proxima centauri
+kepler-22b	kepler-22
+
+question : « quelles planètes sont dans le même système que proxima b ? » (c’est-à-dire autour de la même étoile)
+
+réfléchissons sans sql :
+
+1. on cherche l’étoile de proxima b : proxima centauri;
+2. on cherche toutes les planètes de proxima centauri : proxima b et proxima d.
+
+remarquons que proxima b fait partie du résultat, puisqu’elle est évidemment dans son propre système.
+
+2. solution avec une sous-requête
+
+SELECT p1.nom
+FROM planete as p1
+WHERE p1.etoile = (SELECT p2.etoile
+                   FROM planete as p2
+                   WHERE p2.nom = 'proxima b');
+
