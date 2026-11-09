@@ -2462,3 +2462,52 @@ WHERE p1.etoile = (SELECT p2.etoile
                    FROM planete as p2
                    WHERE p2.nom = 'proxima b');
 
+de l’intérieur vers l’extérieur :
+
+1. la sous-requête cherche l’étoile de proxima b et renvoie le texte 'proxima centauri';
+2. la requête devient : WHERE p1.etoile = 'proxima centauri';
+3. on affiche les planètes de cette étoile.
+
+résultat :
+
+nom
+proxima b
+proxima d
+
+on utilise p1 et p2 car la table planete est utilisée deux fois. une fois dans la requête principale, une fois dans la sous-requête. les alias permettent de savoir de quelle utilisation on parle, comme pour l’auto-jointure.
+
+3. l’autre solution : l’auto-jointure
+
+peut-on faire la même chose sans sous-requête ? oui, avec une auto-jointure :
+
+SELECT p1.nom
+FROM planete AS p1, planete AS p2
+WHERE p1.etoile = p2.etoile
+AND p2.nom = 'proxima b';
+
+décomposons : 
+
+1. FROM planete AS p1, planete AS p2 : produit cartésien de la table avec elle-même, soit 5 × 5 = 25 lignes;
+2. p2.nom = 'proxima b' : on ne garde que les lignes où p2 est proxima b, il en reste 5 :
+
+p1.nom	    p1.etoile	        p2.nom	    p2.etoile
+terre	    soleil	            proxima b	proxima centauri
+mars	    soleil	            proxima b	proxima centauri
+proxima b	proxima centauri	proxima b	proxima centauri
+proxima d	proxima centauri	proxima b	proxima centauri
+kepler-22b	kepler-22	        proxima b	proxima centauri
+
+3. p1.etoile = p2.etoile : on garde les lignes où les deux étoiles sont identiques. il reste proxima b et proxima d.
+
+même résultat que la sous-requête. on peut aussi l’écrire avec JOIN :
+
+SELECT p1.nom
+FROM planete p1
+JOIN planete p2 
+ON p1.etoile = p2.etoile
+WHERE p2.nom = 'proxima b';
+
+à retenir : 
+
+une sous-requête peut renvoyer un texte, pas seulement un nombre. pour comparer une ligne à une autre ligne de la même table, on peut utiliser soit une sous-requête, soit une auto-jointure avec deux alias.
+
