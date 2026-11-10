@@ -2575,56 +2575,69 @@ en client-serveur, les clients parlent directement au serveur de la base, ce qui
 
 introduction aux bases de données — partie 1 : données et sgbd
 
-1. c’est quoi une donnée ?
+1. c'est quoi une donnée ?
 
-une donnée, c’est une information brute enregistrée quelque part.
+une donnée, c'est une information brute enregistrée quelque part.
 
 exemples :
 
-- "lucas" → une donnée (un prénom);
-- 19 → une donnée (un âge);
-- "2024-09-01" → une donnée (une date).
+- "lucas" → un prénom;
+- 19 → un âge;
+- "2024-09-01" → une date.
 
-seule, une donnée ne veut rien dire. c’est quand on les regroupe et qu’on les organise qu’elles deviennent utiles.
+seule, une donnée ne veut rien dire. c'est quand on les regroupe et qu'on les organise qu'elles deviennent utiles.
 
-une base de données, c’est un ensemble structuré de données, conçu pour être stocké, consulté et modifié facilement.
+une base de données, c'est un ensemble structuré de données, conçu pour être stocké, consulté et modifié facilement.
 
 exemple : la base de la bibliothèque de junia contient les données de tous les livres, tous les étudiants, et tous les emprunts.
 
-2. le sgbd
 
-sgbd = système de gestion de bases de données
+2. c'est quoi un sgbd ?
 
-c’est le logiciel qui gère la base. exemples connus : mysql, postgresql, sqlite, oracle.
+sgbd signifie système de gestion de bases de données.
 
-tu lui envoies des requêtes sql, il les exécute et te renvoie les résultats. c’est lui que tu as utilisé depuis le début du cours.
+c'est le logiciel qui gère la base. exemples connus : mysql, postgresql, sqlite, oracle.
 
-3. les missions du sgbd
+tu lui envoies des requêtes sql, il les exécute et te renvoie les résultats. c'est lui que tu as utilisé depuis le début du cours.
 
-les quatre principales :
 
-mission	    explication simple
-stockage	il enregistre les données de façon persistante (ça reste même après redémarrage)
-accès	    il permet de lire, ajouter, modifier, supprimer des données via des requêtes
-intégrité	il vérifie que les données respectent les règles (pas de doublon de clé, pas de valeur impossible)
-sécurité	il contrôle qui a le droit de faire quoi (lire ? modifier ? supprimer ?)
+3. les quatre missions du sgbd
 
-l’architecture 3-tiers repose entièrement sur le sgbd pour assurer ces missions.
+le sgbd a quatre missions principales.
+
+le stockage : il enregistre les données de façon persistante. ça veut dire que même si tu éteins l'ordinateur, les données sont toujours là au redémarrage.
+
+l'accès : il permet de lire, ajouter, modifier et supprimer des données via des requêtes.
+
+l'intégrité : il vérifie que les données respectent les règles. par exemple, il refuse deux lignes avec la même clé primaire, ou une valeur impossible.
+
+la sécurité : il contrôle qui a le droit de faire quoi. qui peut lire ? qui peut modifier ? qui peut supprimer ?
+
+l'architecture 3-tiers repose entièrement sur le sgbd pour assurer ces quatre missions.
+
 
 4. sgbd vs tableur (excel)
 
-                    sgbd	                                    tableur (excel)
-volume	            des millions de lignes	                    quelques milliers max
-accès simultané	    des centaines d’utilisateurs en même temps	un seul utilisateur à la fois
-intégrité	        règles strictes (clés, types)	            aucune règle automatique
-langage	            sql (puissant, standardisé)	                formules (limitées)
-sécurité	        droits par utilisateur	                    aucune gestion native
+imagine qu'une entreprise veuille gérer les données de ses 500 000 clients. elle a deux options.
 
-conclusion : un tableur, c’est bien pour un usage personnel. une base de données, c’est pour les applications réelles avec plusieurs utilisateurs et beaucoup de données.
+option 1 : un tableur comme excel.
+option 2 : une base de données avec un sgbd.
 
-à retenir : 
+voici la différence :
 
-un sgbd est le logiciel qui gère une base de données. ses missions principales : stocker, donner accès, garantir l’intégrité, assurer la sécurité. il est bien plus puissant qu’un tableur pour tout usage à grande échelle.
+                    sgbd                                    tableur (excel)
+volume              des millions de lignes                  quelques milliers max
+accès simultané     des centaines d'utilisateurs en même    un seul utilisateur à la fois
+                    temps
+intégrité           règles strictes (clés, types)           aucune règle automatique
+langage             sql (puissant, standardisé)             formules (limitées)
+sécurité            droits par utilisateur                  aucune gestion native
+
+un tableur, c'est bien pour un usage personnel. une base de données, c'est pour les applications réelles avec plusieurs utilisateurs et beaucoup de données.
+
+à retenir :
+
+un sgbd est le logiciel qui gère une base de données. ses quatre missions : stocker de façon persistante, donner accès, garantir l'intégrité, assurer la sécurité. c'est bien plus puissant qu'un tableur dès qu'on parle de volume ou de plusieurs utilisateurs.
 
 
 
@@ -2632,33 +2645,33 @@ introduction aux bases de données — partie 2 : schéma relationnel et clés
 
 1. le modèle relationnel
 
-une base de données relationnelle organise les données en tables (aussi appelées relations).
+une base de données relationnelle organise les données en tables.
 
 chaque table a :
 
 - un nom;
-- des colonnes (= attributs) : chaque colonne a un nom et un type;
-- des lignes (= tuples) : chaque ligne est un enregistrement.
+- des colonnes, aussi appelées attributs : chaque colonne a un nom et un type;
+- des lignes, aussi appelées tuples : chaque ligne est un enregistrement.
 
-la table etudiant :
+prenons la table etudiant comme exemple :
 
-id_etudiant	nom	    prenom	age
-1	        camara	louis	20
-2	        dupont	sarah	21
-3	        martin	hugo	19
+id_etudiant     nom         prenom      age
+1               camara      louis       20
+2               dupont      sarah       21
+3               martin      hugo        19
 
-le schéma de cette table s’écrit comme ça :
+le schéma de cette table s'écrit comme ça :
+
 etudiant(id_etudiant, nom, prenom, age)
 
-c’est ce qu’on appelle le schéma relationnel : la description de la structure d’une table, sans les données.
+c'est ce qu'on appelle le schéma relationnel : la description de la structure d'une table, sans les données.
 
-2. les clés
 
-clé primaire (primary key / pk)
+2. la clé primaire
 
-la clé primaire est l’attribut (ou groupe d’attributs) qui identifie de façon unique chaque ligne d’une table.
+la clé primaire est l'attribut qui identifie de façon unique chaque ligne d'une table.
 
-règles :
+deux règles importantes :
 
 - unique : deux lignes ne peuvent pas avoir la même valeur;
 - non nulle : elle ne peut jamais être vide.
@@ -2667,50 +2680,57 @@ dans le schéma, on la souligne :
 
 etudiant(<u>id_etudiant</u>, nom, prenom, age)
 
-ici, id_etudiant est la clé primaire. il n’y aura jamais deux étudiants avec le même id.
+ici, id_etudiant est la clé primaire. il n'y aura jamais deux étudiants avec le même id.
 
-clé étrangère (foreign key / fk)
 
-une clé étrangère est un attribut dans une table qui fait référence à la clé primaire d’une autre table. c’est ce qui crée le lien entre deux tables.
+3. la clé étrangère
 
-exemple : la table emprunt :
+une clé étrangère est un attribut dans une table qui fait référence à la clé primaire d'une autre table. c'est ce qui crée le lien entre deux tables.
+
+prenons la table emprunt comme exemple :
 
 emprunt(<u>id_emprunt</u>, date, #id_etudiant, #id_livre)
 
 #id_etudiant est une clé étrangère → elle pointe vers id_etudiant dans la table etudiant.
 
-le # (ou parfois souligné en pointillé) signale une clé étrangère.
+le # signale une clé étrangère dans le schéma.
 
-contrainte d’intégrité référentielle
 
-si emprunt.id_etudiant = 5, il doit exister un étudiant avec id_etudiant = 5 dans la table etudiant. sinon, le sgbd refuse l’insertion. c’est le sgbd qui vérifie ça automatiquement. c’est sa mission d’intégrité.
+4. la contrainte d'intégrité référentielle
 
-à retenir : 
+si emprunt.id_etudiant = 5, il doit exister un étudiant avec id_etudiant = 5 dans la table etudiant.
 
-le schéma relationnel décrit la structure d’une table (nom + attributs). la clé primaire identifie chaque ligne de façon unique. la clé étrangère crée un lien vers une autre table et garantit la cohérence des données.
+si cet étudiant n'existe pas, le sgbd refuse l'insertion. c'est lui qui vérifie ça automatiquement. c'est sa mission d'intégrité.
+
+à retenir :
+
+le schéma relationnel décrit la structure d'une table. la clé primaire identifie chaque ligne de façon unique : elle est unique et non nulle. la clé étrangère crée un lien vers une autre table et garantit la cohérence des données. on la note avec # dans le schéma.
 
 
 
 introduction aux bases de données — partie 3 : le mcd
 
-1. c’est quoi un mcd ?
+1. c'est quoi un mcd ?
 
-le mcd (modèle conceptuel des données) est un schéma visuel qui représente la structure d’une base de données avant de la coder. c’est la phase de conception.
+mcd signifie modèle conceptuel des données.
+
+c'est un schéma visuel qui représente la structure d'une base de données avant de la coder. on conçoit d'abord sur le papier, on code ensuite.
 
 on y représente :
 
-- les entités : les “objets” du monde réel qu’on veut stocker;
-- leurs propriétés : les informations qu’on garde sur chaque entité;
+- les entités : les objets du monde réel qu'on veut stocker;
+- leurs propriétés : les informations qu'on garde sur chaque entité;
 - les associations entre entités;
-- les cardinalités : combien d’objets peuvent être liés entre eux.
+- les cardinalités : combien d'objets peuvent être liés entre eux.
+
 
 2. entités et propriétés
 
-une entité = une catégorie d’objet (étudiant, livre, cours…)
+une entité, c'est une catégorie d'objet : étudiant, livre, cours…
 
-une propriété = une information sur cette entité
+une propriété, c'est une information sur cette entité : son nom, son age, sa date de naissance…
 
-chaque entité a un identifiant : la propriété qui distingue chaque occurrence (c’est ce qui deviendra la clé primaire).
+chaque entité a un identifiant : c'est la propriété qui distingue chaque occurrence. c'est lui qui deviendra la clé primaire.
 
 ┌──────────────────┐
 │    ETUDIANT      │
@@ -2721,102 +2741,106 @@ chaque entité a un identifiant : la propriété qui distingue chaque occurrence
 │  age             │
 └──────────────────┘
 
+
 3. les associations et les cardinalités
 
-une association relie deux entités. les cardinalités indiquent combien d’occurrences d’une entité peuvent être liées à une occurrence de l’autre.
+une association relie deux entités.
 
-cardinalité	sens
-1..1	    exactement 1
-0..1	    0 ou 1 (optionnel)
-1..*	    au moins 1
-0..*	    0 ou plusieurs (le plus courant)
+les cardinalités indiquent combien d'occurrences d'une entité peuvent être liées à une occurrence de l'autre.
 
-exemple : un étudiant s’inscrit à des cours.
+cardinalité     sens
+1..1            exactement 1
+0..1            0 ou 1 (optionnel)
+1..*            au moins 1
+0..*            0 ou plusieurs (le plus courant)
+
+exemple : un étudiant s'inscrit à des cours.
 
 ┌───────────┐    0..*   INSCRIPTION   1..*   ┌──────────┐
 │ ETUDIANT  │─────────────────────────────── │  COURS   │
 └───────────┘                                └──────────┘
 
-lecture : un étudiant peut s’inscrire à 0 ou plusieurs cours. un cours doit avoir au moins 1 étudiant inscrit.
+lecture : un étudiant peut s'inscrire à 0 ou plusieurs cours. un cours doit avoir au moins 1 étudiant inscrit.
+
 
 4. association porteuse de données
 
-une association peut elle-même porter des données, si l’information n’appartient ni à une entité ni à l’autre, mais à la relation entre les deux.
+une association peut elle-même porter des données, si l'information n'appartient ni à une entité ni à l'autre, mais à la relation entre les deux.
 
-exemple : la date d’inscription appartient à l’acte d’inscription, pas à l’étudiant seul ni au cours seul.
+exemple : la date d'inscription appartient à l'acte d'inscription, pas à l'étudiant seul ni au cours seul. on la place donc sur l'association.
 
 ┌───────────┐  0..*   INSCRIPTION   1..*  ┌──────────┐
 │ ETUDIANT  │──────── date_insc ──────────│  COURS   │
 └───────────┘                             └──────────┘
 
-à retenir : 
+à retenir :
 
-le mcd modélise la réalité avec des entités (objets), des propriétés (infos), un identifiant (futur pk), et des associations avec des cardinalités. une association peut porter des données si l’info appartient à la relation elle-même.
+le mcd modélise la réalité avec des entités (objets), des propriétés (infos), un identifiant (futur pk), et des associations avec des cardinalités. une association peut porter des données si l'info appartient à la relation elle-même, pas à une entité seule.
 
 
 
 introduction aux bases de données — partie 4 : du mcd au mld (règles de passage)
 
-le mld (modèle logique des données) = la traduction du mcd en schéma relationnel (les tables).
+le mld signifie modèle logique des données. c'est la traduction du mcd en schéma relationnel, c'est-à-dire en tables.
 
-il y a des règles de passage précises selon le type d’association.
+il y a des règles précises selon le type d'association.
 
-règle 1 — association 0..* / 1..* (la plus courante)
 
-chaque entité devient une table. la clé primaire de l’entité du côté 1..* ou 0..* devient une clé étrangère dans l’autre table.
+cas a : association *..*  (many-to-many)
 
-en réalité pour ce type, on crée une table intermédiaire (surtout quand les deux côtés sont *..*).
+c'est le cas le plus courant.
 
-voici les trois cas :
-
-cas a : association *..* (many-to-many)
-
-→ on crée une table intermédiaire avec les deux clés étrangères.
+exemple :
 
 mcd :
 ETUDIANT (0..*) ── INSCRIPTION ── (1..*) COURS
+
+règle : on crée une table intermédiaire avec les deux clés étrangères. les deux clés étrangères forment ensemble la clé primaire de cette table.
 
 mld :
 etudiant(<u>id_etudiant</u>, nom, prenom)
 cours(<u>id_cours</u>, intitule)
 inscription(<u>#id_etudiant, #id_cours</u>, date_insc)
 
-les deux clés étrangères forment ensemble la clé primaire de la table intermédiaire.
 
-cas b : association 1..1 / 0..* (one-to-many)
+cas b : association 1..1 / 0..*  (one-to-many)
 
-→ pas de table intermédiaire. la clé primaire du côté 0..* va comme clé étrangère dans la table du côté 1..1.
+exemple :
 
 mcd :
 PROMOTION (1..1) ── APPARTIENT ── (0..*) ETUDIANT
   (un étudiant appartient à exactement 1 promotion)
   (une promotion a 0 ou plusieurs étudiants)
 
+règle : pas de table intermédiaire. la clé primaire du côté 0..* va comme clé étrangère dans la table du côté 1..1.
+
 mld :
 promotion(<u>id_promotion</u>, nom)
 etudiant(<u>id_etudiant</u>, nom, prenom, #id_promotion)
 
+
 cas c : association 1..1 / 1..1
 
-→ on fusionne les deux tables en une seule, ou on met la fk d’un côté.
+règle : on fusionne les deux tables en une seule, ou on met la clé étrangère d'un côté.
+
 
 les types sql à connaître
 
-type	    usage
-integer	    nombre entier
-varchar(50)	chaîne de caractères (max 50)
-serial	    entier auto-incrémenté → parfait pour les id
-date	    une date
+type            usage
+integer         nombre entier
+varchar(50)     chaîne de caractères (max 50 caractères)
+serial          entier auto-incrémenté → parfait pour les id
+date            une date
 
-à retenir : 
+à retenir :
 
-*..* → table intermédiaire avec deux fk. 1..1 / 0..* → fk dans la table du côté 1..1, pas de table intermédiaire. les types : serial pour les id, varchar(n) pour le texte, integer pour les nombres.
+*..*  → table intermédiaire avec deux clés étrangères. 1..1 / 0..*  → clé étrangère dans la table du côté 1..1, pas de table intermédiaire. 1..1 / 1..1 → fusion des deux tables. les types : serial pour les id, varchar(n) pour le texte, integer pour les nombres.
 
 
 
 création de tables en sql
 
-1. créer une table — CREATE TABLE
+1. créer une table — create table
 
 CREATE TABLE etudiant (
     id_etudiant SERIAL PRIMARY KEY,
@@ -2825,50 +2849,57 @@ CREATE TABLE etudiant (
     age         INTEGER
 );
 
-- serial : entier auto-incrémenté (le sgbd génère l’id tout seul);
+- serial : entier auto-incrémenté, le sgbd génère l'id tout seul;
 - primary key : déclare la clé primaire;
-- varchar(50) : texte jusqu’à 50 caractères;
+- varchar(50) : texte jusqu'à 50 caractères;
 - integer : nombre entier.
 
-2. clé étrangère — references
+
+2. la clé étrangère — references
+
+pour déclarer une clé étrangère, on utilise references :
 
 CREATE TABLE inscription (
-    id_inscription SERIAL PRIMARY KEY,
+    id_inscription   SERIAL PRIMARY KEY,
     date_inscription DATE,
-    id_etudiant INTEGER REFERENCES etudiant(id_etudiant),
-    id_cours    INTEGER REFERENCES cours(id_cours)
+    id_etudiant      INTEGER REFERENCES etudiant(id_etudiant),
+    id_cours         INTEGER REFERENCES cours(id_cours)
 );
 
-REFERENCES = clé étrangère. le sgbd vérifiera automatiquement l’intégrité référentielle.
+le sgbd vérifie automatiquement l'intégrité référentielle. si tu essaies d'insérer un id_etudiant qui n'existe pas dans la table etudiant, il refuse.
 
-3. insérer des données — INSERT INTO
+
+3. insérer des données — insert into
 
 INSERT INTO etudiant (nom, prenom, age)
 VALUES ('camara', 'louis', 20);
 
-on ne précise pas id_etudiant car il est serial → généré automatiquement.
+on ne précise pas id_etudiant car il est serial : le sgbd le génère automatiquement.
 
-4. modifier des données — UPDATE
+
+4. modifier des données — update
 
 UPDATE etudiant
 SET age = 21
 WHERE nom = 'camara';
 
-attention : sans WHERE, toutes les lignes sont modifiées.
+attention : sans where, toutes les lignes de la table sont modifiées.
 
-5. supprimer des lignes — DELETE
+
+5. supprimer des lignes — delete
 
 DELETE FROM etudiant
 WHERE id_etudiant = 3;
 
-attention : sans WHERE, toute la table est vidée (les colonnes restent).
+attention : sans where, toute la table est vidée. les colonnes restent, mais il n'y a plus aucune ligne.
 
-6. supprimer une table — DROP TABLE
+
+6. supprimer une table — drop table
 
 DROP TABLE etudiant;
 
-ça supprime la table et toutes ses données. définitif.
+ça supprime la table et toutes ses données. c'est définitif.
 
-à retenir : 
+à retenir :
 
-CREATE TABLE + types (SERIAL, VARCHAR(n), INTEGER, DATE) + PRIMARY KEY + REFERENCES pour les fk. INSERT pour ajouter, UPDATE + WHERE pour modifier, DELETE + WHERE pour supprimer des lignes, DROP TABLE pour supprimer la table entière.
+create table crée une table avec ses colonnes et leurs types. references déclare une clé étrangère. insert into ajoute une ligne. update modifie des lignes existantes. delete supprime des lignes. drop table supprime toute la table. toujours mettre where avec update et delete, sinon c'est toute la table qui est touchée.
