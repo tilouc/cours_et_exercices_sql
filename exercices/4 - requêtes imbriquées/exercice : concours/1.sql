@@ -11,5 +11,3 @@ JOIN epreuve e ON em.epreuve_id = e.id
 JOIN concours c ON e.concours_id = c.id
 WHERE c.nom = 'ccinp' AND c.filiere = 'mp'
 GROUP BY em.matiere;
-
--- à revoir --
