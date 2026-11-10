@@ -9,12 +9,13 @@ c'est un langage qui permet de demander à une base de données de nous fournir 
 
 imagine une boutique qui vend des produits. elle conserve ses informations dans un tableau nommé produits.
 
-id	nom	        prix	stock
-1	ordinateur	800	    5
-2	souris	    25	    20
-3	clavier	    60	    12
-4	écran	    200	    8
-5	casque	    90	    15
+| id | nom | prix | stock |
+| --- | --- | --- | --- |
+| 1 | ordinateur | 800 | 5 |
+| 2 | souris | 25 | 20 |
+| 3 | clavier | 60 | 12 |
+| 4 | écran | 200 | 8 |
+| 5 | casque | 90 | 15 |
 
 dans ce tableau :
 - produits est le nom de la table.
@@ -24,12 +25,14 @@ dans ce tableau :
 mais imagine que le magasin possède 1 million de produits. là, tu as besoin du sql pour retrouver les informations facilement.
 
 
-2. les deux premières instructions : SELECT et FROM
+2. les deux premières instructions : `SELECT` et `FROM`
 
 prenons cette requête :
 
+```sql
 select nom
 from produits;
+```
 
 select nom : je veux récupérer la colonne nom
 from produits : depuis la table produits
@@ -45,33 +48,38 @@ clavier
 casque
 
 à retenir :
-SELECT : ce que tu veux récupérer
-FROM : dans quelle table tu veux chercher
+`SELECT` : ce que tu veux récupérer
+`FROM` : dans quelle table tu veux chercher
 
 
 3. sélectionner plusieurs colonnes
 
 on veut connaître le nom et le prix de chaque produit : 
 
+```sql
 SELECT nom, prix
 FROM produits;
+```
 
 tu dois juste séparer les noms des colonnes par des virgules
 
 résultat :
 
-nom	        prix
-ordinateur	800
-souris	    25
-clavier	    60
-écran	    200
-casque	    90
+| nom | prix |
+| --- | --- |
+| ordinateur | 800 |
+| souris | 25 |
+| clavier | 60 |
+| écran | 200 |
+| casque | 90 |
 
 
 et si on veut récupérer toutes les colonnes ? : 
 
+```sql
 SELECT *
 FROM produits;
+```
 
 * veut dire toutes les colonnes
 
@@ -84,34 +92,38 @@ choses à savoir :
 
 
 
-chapitre 1 — partie 2 : les calculs avec SELECT
+chapitre 1 — partie 2 : les calculs avec `SELECT`
 
 1. peut-on faire des calculs en sql ?
 
-jusqu'ici, on utilisait SELECT pour récupérer des informations. mais SELECT permet aussi de faire des calculs.
+jusqu'ici, on utilisait `SELECT` pour récupérer des informations. mais `SELECT` permet aussi de faire des calculs.
 
 reprenons la table produits comme exemple : 
 
-id	nom	        prix	stock
-1	ordinateur	800	    5
-2	souris	    25	    20
-3	clavier	    60	    12
-4	écran	    200	    8
-5	casque	    90	    15
+| id | nom | prix | stock |
+| --- | --- | --- | --- |
+| 1 | ordinateur | 800 | 5 |
+| 2 | souris | 25 | 20 |
+| 3 | clavier | 60 | 12 |
+| 4 | écran | 200 | 8 |
+| 5 | casque | 90 | 15 |
 
 on veut connaître la valeur totale du stock de chaque produit, calculée à partir de son prix de vente. au lieu de calculer manuellement chaque ligne, on fait : 
 
+```sql
 SELECT nom, prix * stock
 FROM produits;
+```
 
 résultat :
 
-nom	        prix * stock
-ordinateur	4000
-souris	    500
-clavier	    720
-écran	    1600
-casque	    1350
+| nom | prix * stock |
+| --- | --- |
+| ordinateur | 4000 |
+| souris | 500 |
+| clavier | 720 |
+| écran | 1600 |
+| casque | 1350 |
 
 il est important de savoir que cette requête ne modifie aucune donnée dans la table. elle produit juste le calcul.
 
@@ -119,12 +131,13 @@ il est important de savoir que cette requête ne modifie aucune donnée dans la 
 
 voici les principaux opérateurs que nous allons utiliser : 
 
-opérateur	rôle
-+	        addition
--	        soustraction
-*	        multiplication
-/	        division
-pow(a, b)	puissance
+| opérateur | rôle |
+| --- | --- |
+| + | addition |
+| - | soustraction |
+| * | multiplication |
+| / | division |
+| pow(a, b) | puissance |
 
 
 exemple : une réduction de 20 %
@@ -135,16 +148,19 @@ prix_nouveau = prix * 0.8
 
 on va écrire : 
 
+```sql
 SELECT nom, prix * 0.8
+```
 
 résultat :
 
-nom	        prix * 0.8
-ordinateur	640
-souris	    20
-clavier	    48
-écran	    160
-casque	    72
+| nom | prix * 0.8 |
+| --- | --- |
+| ordinateur | 640 |
+| souris | 20 |
+| clavier | 48 |
+| écran | 160 |
+| casque | 72 |
 
 
 
@@ -152,22 +168,25 @@ chapitre 1 — partie 3 : distinct
 
 1. à quoi sert distinct ?
 
-DISTINCT permet de supprimer les doublons dans les résultats d'une requête.
+`DISTINCT` permet de supprimer les doublons dans les résultats d'une requête.
 
 prenons l'exemple d'une table appelée clients : 
 
-id	nom	    ville
-1	alice	lille
-2	bob	    paris
-3	charles	lille
-4	david	lyon
-5	emma	paris
-6	fatou	lille
+| id | nom | ville |
+| --- | --- | --- |
+| 1 | alice | lille |
+| 2 | bob | paris |
+| 3 | charles | lille |
+| 4 | david | lyon |
+| 5 | emma | paris |
+| 6 | fatou | lille |
 
 pour afficher les villes dans lesquelles mes clients habitent, j'écris : 
 
+```sql
 SELECT ville
 FROM clients
+```
 
 résultat :
 
@@ -179,12 +198,16 @@ lyon
 paris
 lille
 
+```sql
 on remarque que lille apparaît trois fois tandis que paris deux fois.
+```
 
 si on veut afficher de telle sorte qu'on veuille afficher chaque ville une seule fois, on écrit : 
 
+```sql
 SELECT DISTINCT ville
 FROM clients;
+```
 
 résultat :
 
@@ -194,7 +217,9 @@ paris
 lyon
 
 
+```sql
 DISTINCT se place toujours juste après SELECT et avant le nom de la colonne.
+```
 
 
 
@@ -210,68 +235,80 @@ imaginons qu'on veut connaître :
 
 les fonctions d'agrégation permettent de faire des calculs en utilisant plusieurs lignes d'un tableau. le cours présente 5 qui sont essentielles : 
 
-fonction	rôle
-SUM()	    calculer une somme
-MIN()	    trouver le minimum
-MAX()	    trouver le maximum
-COUNT()	    compter
-AVG()	    calculer une moyenne
+| fonction | rôle |
+| --- | --- |
+| SUM() | calculer une somme |
+| MIN() | trouver le minimum |
+| MAX() | trouver le maximum |
+| COUNT() | compter |
+| AVG() | calculer une moyenne |
 
 reprenons notre table produits comme exemple : 
 
-nom	        prix	stock
-ordinateur	800	    5
-souris	    25	    20
-clavier	    60	    12
-écran	    200	    8
-casque	    90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| ordinateur | 800 | 5 |
+| souris | 25 | 20 |
+| clavier | 60 | 12 |
+| écran | 200 | 8 |
+| casque | 90 | 15 |
 
-a. SUM() — la somme
+a. `SUM`() — la somme
 
 on veut connaître le nombre total d'unités en stock : 
 
+```sql
 SELECT SUM(stock)
 FROM produits;
+```
 
 sql fait : 5+ 20+ 12 + 8 + 15 = 60
 
 résultat : 60
 
-b. MIN() — le minimum
+b. `MIN`() — le minimum
 
 on veut connaître le prix le plus bas : 
 
+```sql
 SELECT MIN(prix)
 FROM produits;
+```
 
 résultat : 25
 
-c. MAX() — le maximum
+c. `MAX`() — le maximum
 
 on veut connaître le prix le plus élevé : 
 
+```sql
 SELECT MAX(prix)
 FROM produits;
+```
 
 résultat : 800
 
-d. COUNT() — compter
+d. `COUNT`() — compter
 
 on veut connaître le nombre de lignes dans la table : 
 
+```sql
 SELECT COUNT(*)
 FROM produits;
+```
 
 résultat : 5
 
-attention, car COUNT(*) compte toutes les lignes de la table tandis que COUNT(prix) compte seulement les lignes de la colonne prix qui ne sont pas nulles.
+attention, car `COUNT`(*) compte toutes les lignes de la table tandis que `COUNT`(prix) compte seulement les lignes de la colonne prix qui ne sont pas nulles.
 
-e. AVG() — la moyenne
+e. `AVG`() — la moyenne
 
 on veut connaître le prix moyen des produits : 
 
+```sql
 SELECT AVG(prix)
 FROM produits;
+```
 
 sql fait : (800 + 25 + 60 + 200 + 90) / 5 = 235
 
@@ -279,146 +316,168 @@ résultat : 235
 
 
 
-chapitre 1 — partie 5 : AS
+chapitre 1 — partie 5 : `AS`
 
-1. à quoi sert AS ?
+1. à quoi sert `AS` ?
 
-en sql, AS permet de donner un nom à une colonne dans le résultat d'une requête.
+en sql, `AS` permet de donner un nom à une colonne dans le résultat d'une requête.
 
 reprenons notre table produits comme exemple : 
 
-nom	        prix	stock
-ordinateur	800	    5
-souris	    25	    20
-clavier	    60	    12
-écran	    200	    8
-casque	    90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| ordinateur | 800 | 5 |
+| souris | 25 | 20 |
+| clavier | 60 | 12 |
+| écran | 200 | 8 |
+| casque | 90 | 15 |
 
 imagine qu'on veut afficher la valeur totale du stock de chaque produit : 
 
 on sait déjà écrire : 
 
+```sql
 SELECT nom, prix * stock
 FROM produits;
+```
 
 le problème, c'est que le résultat possède un nom de colonne pas très clair : 
 
-nom	        prix * stock
-ordinateur	4000
-souris	    500
-clavier	    720
-écran	    1600
-casque	    1350
+| nom | prix * stock |
+| --- | --- |
+| ordinateur | 4000 |
+| souris | 500 |
+| clavier | 720 |
+| écran | 1600 |
+| casque | 1350 |
 
-avec AS, je peux donner un nom plus clair à cette colonne : 
+avec `AS`, je peux donner un nom plus clair à cette colonne : 
 
+```sql
 SELECT nom, prix * stock as valeur_stock
 FROM produits;
+```
 
 résultat :
 
-nom	        valeur_stock
-ordinateur	4000
-souris	    500
-clavier	    720
-écran	    1600
-casque	    1350
+| nom | valeur_stock |
+| --- | --- |
+| ordinateur | 4000 |
+| souris | 500 |
+| clavier | 720 |
+| écran | 1600 |
+| casque | 1350 |
 
 la différence est qu'au lieu d'afficher prix * stock comme titre de colonne, sql affiche valeur_stock.
 
-il est important de savoir que AS ne modifie pas la table d'origine. il change seulement le nom affiché dans le résultat.
+il est important de savoir que `AS` ne modifie pas la table d'origine. il change seulement le nom affiché dans le résultat.
 
 2. as fonctionne aussi avec les fonctions d'agrégation
 
 par exemple : 
 
+```sql
 SELECT AVG(prix) as prix_moyen
 FROM produits;
+```
 
 résultat :
 
 prix_moyen
 235
 
+```sql
 on a tout simplement donné le nom prix_moyen au résultat de AVG(prix).
+```
 
 
 
-chapitre 1 — partie 6 : WHERE
+chapitre 1 — partie 6 : `WHERE`
 
-1. à quoi sert WHERE ?
+1. à quoi sert `WHERE` ?
 
-jusqu'ici, on sait comment afficher des colonnes avec SELECT. mais, imaginons qu'on veut afficher seulement certains produits , par exemple, ceux qui coûtent plus de 100 €.
+jusqu'ici, on sait comment afficher des colonnes avec `SELECT`. mais, imaginons qu'on veut afficher seulement certains produits , par exemple, ceux qui coûtent plus de 100 €.
 
-c'est ici que WHERE intervient.
+c'est ici que `WHERE` intervient.
 
-WHERE permet de récupérer seulement les lignes qui respectent une ou plusieurs conditions.
+`WHERE` permet de récupérer seulement les lignes qui respectent une ou plusieurs conditions.
 
 reprenons notre table produits comme exemple : 
 
-nom	        prix	stock
-ordinateur	800	    5
-souris	    25	    20
-clavier	    60	    12
-écran	    200	    8
-casque	    90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| ordinateur | 800 | 5 |
+| souris | 25 | 20 |
+| clavier | 60 | 12 |
+| écran | 200 | 8 |
+| casque | 90 | 15 |
 
 on souhaite récupérer uniquement les produits dont le prix dépasse 100 € : 
 
+```sql
 SELECT nom, prix
 FROM produits
 WHERE prix > 100;
+```
 
-SELECT nom, prix : récupére les colonnes nom et prix.
-FROM produits : cherche dans la table produits.
-WHERE prix > 100 : garde uniquement les produits dont le prix est supérieur à 100 €.
+`SELECT` nom, prix : récupére les colonnes nom et prix.
+`FROM` produits : cherche dans la table produits.
+`WHERE` prix > 100 : garde uniquement les produits dont le prix est supérieur à 100 €.
 
 résultat : 
 
-nom	        prix
-ordinateur	800
-écran	    200
+| nom | prix |
+| --- | --- |
+| ordinateur | 800 |
+| écran | 200 |
 
 la souris, le clavier et le casque ne sont pas affichés car ils ne respectent pas la condition.
 
 2. les opérateurs de comparaison
 
-avec WHERE, tu peux utiliser différents opérateurs : 
+avec `WHERE`, tu peux utiliser différents opérateurs : 
 
-opérateur	signification	        exemple
-=	        égal à	                prix = 200
->	        supérieur à	            prix > 100
-<	        inférieur à	            prix < 100
->=	        supérieur ou égal à	    prix >= 100
-<=	        inférieur ou égal à	    prix <= 100
-!=	        différent de	        prix != 100
+| opérateur | signification | exemple |
+| --- | --- | --- |
+| = | égal à | prix = 200 |
+| > | supérieur à | prix > 100 |
+| < | inférieur à | prix < 100 |
+| >= | supérieur ou égal à | prix >= 100 |
+| <= | inférieur ou égal à | prix <= 100 |
+| != | différent de | prix != 100 |
 
 attention, car en sql, on utilise = pour comparer deux valeurs et non == comme en python.
 
 exemple 1 - produits à moins de 100 € : 
 
+```sql
 SELECT nom, prix
 FROM produits
 WHERE prix < 100;
+```
 
 résultat :
 
-nom	    prix
-souris	25
-clavier	60
-casque	90
+| nom | prix |
+| --- | --- |
+| souris | 25 |
+| clavier | 60 |
+| casque | 90 |
 
 exemple 2 - produits dont le stock est inférieur ou égal à 8 : 
 
+```sql
 SELECT nom, stock
 FROM produits
 WHERE stock <= 8;
+```
 
 résultat : 
 
-nom	        stock
-ordinateur	5
-écran	    8
+| nom | stock |
+| --- | --- |
+| ordinateur | 5 |
+| écran | 8 |
 
 3. comment comparer du texte ?
 
@@ -426,99 +485,111 @@ jusqu'ici, nos conditions concernaient uniquement les nombres. mais, on peut ég
 
 par exemple, pour retrouver le produit appelé souris : 
 
+```sql
 SELECT *
 FROM produits
 WHERE nom = 'souris';
+```
 
 résultat : 
 
-nom	    prix	stock
-souris	25	    20
+| nom | prix | stock |
+| --- | --- | --- |
+| souris | 25 | 20 |
 
 attention, car les valeurs textuelles sont placées entre apostrophes '...' ou "...".
 
 à retenir : 
 
-WHERE sert à filtrer les lignes d'une table selon une condition. il se place après FROM.
+`WHERE` sert à filtrer les lignes d'une table selon une condition. il se place après `FROM`.
 prix = 25 : comparaison avec un nombre.
 nom = 'souris' : comparaison avec un texte.
 
-chapitre 1 — partie 7 : AND et OR
+chapitre 1 — partie 7 : `AND` et `OR`
 
-1. à quoi servent AND et OR ?
+1. à quoi servent `AND` et `OR` ?
 
-jusqu'ici, on a utilisé WHERE avec une seule condition.
+jusqu'ici, on a utilisé `WHERE` avec une seule condition.
 
 mais imaginons qu'on veut chercher des produits qui respectent plusieurs conditions en même temps.
 
-c'est exactement le rôle de AND et OR.
+c'est exactement le rôle de `AND` et `OR`.
 
-AND signifie et : toutes les conditions doivent être vraies.
-OR signifie ou : au moins une des conditions doit être vraie.
+`AND` signifie et : toutes les conditions doivent être vraies.
+`OR` signifie ou : au moins une des conditions doit être vraie.
 
 reprenons notre table produits comme exemple : 
 
-nom	        prix	stock
-ordinateur	800	    5
-souris	    25	    20
-clavier	    60	    12
-écran	    200	    8
-casque	    90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| ordinateur | 800 | 5 |
+| souris | 25 | 20 |
+| clavier | 60 | 12 |
+| écran | 200 | 8 |
+| casque | 90 | 15 |
 
-2. AND — plusieurs conditions obligatoires
+2. `AND` — plusieurs conditions obligatoires
 
 imagine qu'on veut afficher les produits qui coûtent plus de 50 € et dont le stock est supérieur ou égal à 10 : 
 
+```sql
 SELECT nom, prix, stock
 FROM produits
 WHERE prix > 50 AND stock >= 10;
+```
 
 pour chaque produit, sql vérifie deux conditions : 
 
-produit	    prix > 50	stock ≥ 10	retenu ?
-ordinateur	oui	        non	        non
-souris	    non	        oui	        non
-clavier	    oui	        oui	        oui
-écran	    oui	        non	        non
-casque	    oui	        oui	        oui
+| produit | prix > 50 | stock ≥ 10 | retenu ? |
+| --- | --- | --- | --- |
+| ordinateur | oui | non | non |
+| souris | non | oui | non |
+| clavier | oui | oui | oui |
+| écran | oui | non | non |
+| casque | oui | oui | oui |
 
 résultat :
 
-nom	    prix	stock
-clavier	60	    12
-casque	90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| clavier | 60 | 12 |
+| casque | 90 | 15 |
 
-avec AND, une seule condition qui est fausse suffit pour exclure un produit.
+avec `AND`, une seule condition qui est fausse suffit pour exclure un produit.
 
-3. OR — au moins une condition vraie
+3. `OR` — au moins une condition vraie
 
 cette fois, on veut afficher les produits qui coûtent plus de 500 € ou dont le stock est supérieur ou égal à 15 : 
 
+```sql
 SELECT nom, prix, stock
 FROM produits
 WHERE prix > 500 OR stock >= 15;
+```
 
-produit	    prix > 500	stock ≥ 15	retenu ?
-ordinateur	oui	        non	        oui
-souris	    non	        oui	        oui
-clavier	    non	        non	        non
-écran	    non	        non	        non
-casque	    non	        oui	        oui
+| produit | prix > 500 | stock ≥ 15 | retenu ? |
+| --- | --- | --- | --- |
+| ordinateur | oui | non | oui |
+| souris | non | oui | oui |
+| clavier | non | non | non |
+| écran | non | non | non |
+| casque | non | oui | oui |
 
 résultat : 
 
-nom	        prix	stock
-ordinateur	800	    5
-souris	    25	    20
-casque	    90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| ordinateur | 800 | 5 |
+| souris | 25 | 20 |
+| casque | 90 | 15 |
 
-avec OR, une seule condition vraie suffit pour inclure le produit.
+avec `OR`, une seule condition vraie suffit pour inclure le produit.
 
-attention, car OR inclut aussi les lignes où les deux conditions sont vraies.
+attention, car `OR` inclut aussi les lignes où les deux conditions sont vraies.
 
-4. combiner AND et OR avec des parenthèses
+4. combiner `AND` et `OR` avec des parenthèses
 
-il est possible de combiner les deux (AND et OR).
+il est possible de combiner les deux (`AND` et `OR`).
 
 imagine qu'on souhaite afficher les produits : 
 - dont le prix dépasse 100 € OU dont le stock atteint au moins 15;
@@ -526,43 +597,50 @@ imagine qu'on souhaite afficher les produits :
 
 on écrit : 
 
+```sql
 SELECT nom, prix, stock
 FROM produits
 WHERE (prix > 100 or stock >= 15)
 AND prix < 500;
+```
 
 ici, les parenthèses servent à regrouper les conditions. sql examine d'abord la condition entre parenthèses, puis vérifie que le prix est inférieur à 500.
 
 résultat : 
 
-nom	    prix	stock
-souris	25	    20
-écran	200	    8
-casque	90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| souris | 25 | 20 |
+| écran | 200 | 8 |
+| casque | 90 | 15 |
 
-il est important de savoir que sans parenthèses, AND est prioritaire sur OR.
+il est important de savoir que sans parenthèses, `AND` est prioritaire sur `OR`.
 
 à retenir : 
 
+```sql
 AND exige toutes les conditions, OR exige au moins une et les parenthèses permettent de regrouper les conditions.
+```
 
 
 
-chapitre 1 — partie 8 : LIKE
+chapitre 1 — partie 8 : `LIKE`
 
-1. à quoi sert LIKE ?
+1. à quoi sert `LIKE` ?
 
-jusqu'ici, on sait qu'utiliser WHERE sert à chercher des valeurs précises.
+jusqu'ici, on sait qu'utiliser `WHERE` sert à chercher des valeurs précises.
 
 par exemple : 
 
+```sql
 SELECT nom
 FROM produits
 WHERE nom = 'clavier';
+```
 
-cette requête recherche le produit dont le nom exact est clavier. mais, imaginons maintenant qu'on veut trouver tous les produits dont le nom commence par la lettre c. on ne connait pas forcément leurs noms complets. c'est ici qu'intervient LIKE.
+cette requête recherche le produit dont le nom exact est clavier. mais, imaginons maintenant qu'on veut trouver tous les produits dont le nom commence par la lettre c. on ne connait pas forcément leurs noms complets. c'est ici qu'intervient `LIKE`.
 
-LIKE permet de rechercher du texte selon un motif sans forcément connaître le texte en entier.
+`LIKE` permet de rechercher du texte selon un motif sans forcément connaître le texte en entier.
 
 2. comprendre le symbole %
 
@@ -570,18 +648,21 @@ en sql, % représente zéro, un ou plusieurs caractères.
 
 reprenons notre table produits comme exemple : 
 
-nom	        prix	stock
-ordinateur	800	    5
-souris	    25	    20
-clavier	    60	    12
-écran	    200	    8
-casque	    90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| ordinateur | 800 | 5 |
+| souris | 25 | 20 |
+| clavier | 60 | 12 |
+| écran | 200 | 8 |
+| casque | 90 | 15 |
 
 exemple 1 - les noms qui commencent par c : 
 
+```sql
 SELECT nom
 FROM produits
 WHERE nom LIKE 'c%';
+```
 
 ici : 
 - c signifie que le nom doit commencer par cette lettre.
@@ -595,9 +676,11 @@ casque
 
 exemple 2 - les noms qui se terminent par e : 
 
+```sql
 SELECT nom
 FROM produits
 WHERE nom LIKE '%e';
+```
 
 ici, on accepte n'importe quels caractères avant la lettre e.
 
@@ -608,9 +691,11 @@ casque
 
 exemple 3 - les noms qui contiennent la lettre a : 
 
+```sql
 SELECT nom
 FROM produits
 WHERE nom LIKE '%a%';
+```
 
 ici, le nom peut contenir des caractères avant et après la lettre a.
 
@@ -629,9 +714,11 @@ contrairement à %, le symbole _ remplace exactement un caractère.
 
 exemple : 
 
+```sql
 SELECT nom
 FROM produits
 WHERE nom LIKE 'c_sque';
+```
 
 sql recherche un nom qui : 
 - commence par c;
@@ -647,111 +734,128 @@ casque
 
 comparaison : 
 
-symbole	signification
-%	    zéro, un ou plusieurs caractères
-_	    un caractère
+| symbole | signification |
+| --- | --- |
+| % | zéro, un ou plusieurs caractères |
+| _ | un caractère |
 
 4. comparer = et like
 
 il faut faire attention à cette différence : 
 
+```sql
 WHERE nom = 'c%'
+```
 
 car, ici sql recherche littéralement le texte c%
 
 en revanche : 
 
+```sql
 WHERE nom LIKE 'c%'
+```
 
 ici, sql recherche tous les noms commençant par c.
 
-% et _ sont des caractères spéciaux lorsqu'ils sont utilisés dans LIKE.
+% et _ sont des caractères spéciaux lorsqu'ils sont utilisés dans `LIKE`.
 
 à retenir : 
 
-LIKE sert à rechercher du texte selon un motif. % remplace un nombre quelconque de caractères, tandis que _ en remplace exactement un.
+`LIKE` sert à rechercher du texte selon un motif. % remplace un nombre quelconque de caractères, tandis que _ en remplace exactement un.
 
 
 
-chapitre 1 — partie 9 : ORDER BY
+chapitre 1 — partie 9 : `ORDER BY`
 
-1. à quoi sert ORDER BY ?
+1. à quoi sert `ORDER BY` ?
 
-jusqu'ici, on sait comment récupérer des données avec SELECT et les filtrer avec WHERE. mais imagine qu'on veut afficher les produits du moins cher au plus cher.
+jusqu'ici, on sait comment récupérer des données avec `SELECT` et les filtrer avec `WHERE`. mais imagine qu'on veut afficher les produits du moins cher au plus cher.
 
-c'est ici qu'intervient ORDER BY.
+c'est ici qu'intervient `ORDER BY`.
 
-ORDER BY permet de trier les résultats d'une requête sql.
+`ORDER BY` permet de trier les résultats d'une requête sql.
 
 reprenons notre table produits comme exemple : 
 
-nom	        prix	stock
-ordinateur	800	    5
-souris	    25	    20
-clavier	    60	    12
-écran	    200	    8
-casque	    90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| ordinateur | 800 | 5 |
+| souris | 25 | 20 |
+| clavier | 60 | 12 |
+| écran | 200 | 8 |
+| casque | 90 | 15 |
 
-2. ASC : trier dans l'ordre croissant
+2. `ASC` : trier dans l'ordre croissant
 
 on veut afficher les produits du moins cher au plus cher : 
 
+```sql
 SELECT nom, prix
 FROM produits
 ORDER BY prix ASC;
+```
 
-ASC signifie ascending, c'est-à-dire croissant.
+`ASC` signifie ascending, c'est-à-dire croissant.
 
 résultat : 
 
-nom	        prix
-souris	    25
-clavier	    60
-casque	    90
-écran	    200
-ordinateur	800
+| nom | prix |
+| --- | --- |
+| souris | 25 |
+| clavier | 60 |
+| casque | 90 |
+| écran | 200 |
+| ordinateur | 800 |
 
-il est important de savoir que ASC est facultatif. si on écrit simplement : 
+il est important de savoir que `ASC` est facultatif. si on écrit simplement : 
 
+```sql
 SELECT nom, prix
 FROM produits
 ORDER BY prix;
+```
 
 on obtient le même résultat car l'ordre croissant est utilisé par défaut.
 
-3. DESC: trier dans l'ordre décroissant
+3. `DESC`: trier dans l'ordre décroissant
 
 ici, on peut afficher les produits du plus cher au moins cher : 
 
+```sql
 SELECT nom, prix
 FROM produits
 ORDER BY prix desc;
+```
 
-DESC signifie descending, c'est-à-dire décroissant.
+`DESC` signifie descending, c'est-à-dire décroissant.
 
 résultat :
 
-nom	        prix
-ordinateur	800
-écran	    200
-casque	    90
-clavier	    60
-souris	    25
+| nom | prix |
+| --- | --- |
+| ordinateur | 800 |
+| écran | 200 |
+| casque | 90 |
+| clavier | 60 |
+| souris | 25 |
 
-instruction	        résultat
-order by prix asc	du moins cher au plus cher
-order by prix desc	du plus cher au moins cher
-order by prix	    identique à asc
+| instruction | résultat |
+| --- | --- |
+| order by prix asc | du moins cher au plus cher |
+| order by prix desc | du plus cher au moins cher |
+| order by prix | identique à asc |
 
 4. peut-on trier du texte ?
 
-oui. ORDER BY ne fonctionne pas seulement avec des nombres.
+oui. `ORDER BY` ne fonctionne pas seulement avec des nombres.
 
 par exemple : 
 
+```sql
 SELECT nom
 FROM produits
 ORDER BY nom ASC;
+```
 
 résultat :
 
@@ -762,16 +866,18 @@ clavier
 ordinateur
 souris
 
-les noms sont classés par ordre alphabétique. et avec DESC, on obtient l'ordre alphabétique inverse.
+les noms sont classés par ordre alphabétique. et avec `DESC`, on obtient l'ordre alphabétique inverse.
 
-5. combiner WHERE et ORDER BY
+5. combiner `WHERE` et `ORDER BY`
 
 imagine qu'on veut afficher les produits coûtant plus de 50 €, classés du plus cher au moins cher : 
 
+```sql
 SELECT nom, prix
 FROM produits
 WHERE prix > 50
 ORDER BY prix DESC;
+```
 
 sql va : 
 
@@ -781,100 +887,112 @@ sql va :
 
 résultat : 
 
-nom	        prix
-ordinateur	800
-écran	    200
-casque	    90
-clavier	    60
+| nom | prix |
+| --- | --- |
+| ordinateur | 800 |
+| écran | 200 |
+| casque | 90 |
+| clavier | 60 |
 
-attention à l'ordre d'écriture car WHERE vient avant ORDER BY.
+attention à l'ordre d'écriture car `WHERE` vient avant `ORDER BY`.
 
 à retenir : 
 
-ORDER BY trie les résultats. ASC signifie croissant (par défaut), DESC signifie décroissant. ORDER BY se place après WHERE seulement si y en a un.
+`ORDER BY` trie les résultats. `ASC` signifie croissant (par défaut), `DESC` signifie décroissant. `ORDER BY` se place après `WHERE` seulement si y en a un.
 
 
 
-chapitre 1 — partie 10 : LIMIT
+chapitre 1 — partie 10 : `LIMIT`
 
-1. à quoi sert LIMIT ?
+1. à quoi sert `LIMIT` ?
 
 imagine que notre magasin possède 10 000 produits.
 
 on exécute : 
 
+```sql
 SELECT *
 FROM produits;
+```
 
 sql va te renvoyer les 10 000 lignes. mais imagine qu'on veut afficher seulement 3 produits.
 
-c'est exactement le rôle de LIMIT.
+c'est exactement le rôle de `LIMIT`.
 
-LIMIT permet de limiter le nombre de lignes affichées dans le résultat d'une requête.
+`LIMIT` permet de limiter le nombre de lignes affichées dans le résultat d'une requête.
 
 reprenons notre table produits comme exemple : 
 
-nom	        prix	stock
-ordinateur	800	    5
-souris	    25	    20
-clavier	    60	    12
-écran	    200	    8
-casque	    90	    15
+| nom | prix | stock |
+| --- | --- | --- |
+| ordinateur | 800 | 5 |
+| souris | 25 | 20 |
+| clavier | 60 | 12 |
+| écran | 200 | 8 |
+| casque | 90 | 15 |
 
 on écrit : 
 
+```sql
 SELECT *
 FROM produits
 LIMIT 3;
+```
 
 le résultat va avoir au maximum 3 lignes.
 
-attention, car sans ORDER BY, sql ne garantit pas quelles seront ces trois lignes. si tu veux choisir les trois premières selon un ordre précis, on doit le préciser.
+attention, car sans `ORDER BY`, sql ne garantit pas quelles seront ces trois lignes. si tu veux choisir les trois premières selon un ordre précis, on doit le préciser.
 
-2. combiner ORDER BY et LIMIT
+2. combiner `ORDER BY` et `LIMIT`
 
-c'est dans cette situation que LIMIT devient particulièrement intéressant.
+c'est dans cette situation que `LIMIT` devient particulièrement intéressant.
 
 imagine qu'on veut retrouver les deux produits les plus chers. comment procéder ?
 
 on va utiliser deux instructions : 
 
-1. ORDER BY prix DESC pour classer les produits du plus cher au moins cher.
-2. LIMIT 2 pour ne conserver que les deux premiers résultats.
+1. `ORDER BY` prix `DESC` pour classer les produits du plus cher au moins cher.
+2. `LIMIT` 2 pour ne conserver que les deux premiers résultats.
 
+```sql
 SELECT nom, prix
 FROM produits
 ORDER BY prix DESC
 LIMIT 2;
+```
 
 voici ce que sql va faire : 
 
 étape 1 : classer les produits du plus cher au moins cher
 
-nom	        prix
-ordinateur	800
-écran	    200
-casque	    90
-clavier	    60
-souris	    25
+| nom | prix |
+| --- | --- |
+| ordinateur | 800 |
+| écran | 200 |
+| casque | 90 |
+| clavier | 60 |
+| souris | 25 |
 
 étape 2 : conserver seulement les deux premiers produits
 
-nom	        prix
-ordinateur	800
-écran	    200
+| nom | prix |
+| --- | --- |
+| ordinateur | 800 |
+| écran | 200 |
 
-ici, LIMIT 2 ne suffit pas à lui seul pour afficher les deux plus chers. c'est ORDER BY prix DESC qui classe les produits, puis LIMIT 2 qui limite le résultat à deux lignes.
+ici, `LIMIT` 2 ne suffit pas à lui seul pour afficher les deux plus chers. c'est `ORDER BY` prix `DESC` qui classe les produits, puis `LIMIT` 2 qui limite le résultat à deux lignes.
 
-3. combiner WHERE, ORDER BY et LIMIT
+3. combiner `WHERE`, `ORDER BY` et `LIMIT`
 
 maintenant, imagine que tu veux afficher les deux produits les moins chers parmi ceux qui coûtent plus de 50 € : 
 
+```sql
 SELECT nom, prix
 FROM produits
 WHERE prix > 50
 ORDER BY prix ASC
 LIMIT 2;
+```
 
 sql va : 
 
@@ -884,25 +1002,28 @@ sql va :
 
 résultat : 
 
-nom	    prix
-clavier	60
-casque	90
+| nom | prix |
+| --- | --- |
+| clavier | 60 |
+| casque | 90 |
 
 4. l'ordre des instructions sql
 
 quand tu écris une requête contenant toutes ces instructions, tu dois respecter cet ordre : 
 
+```sql
 SELECT colonne
 FROM table
 WHERE condition
 ORDER BY colonne ASC
 LIMIT nombre;
+```
 
-elles ne sont pas toutes obligatoires. on peut écrire une requête sans WHERE, sans ORDER BY ou sans LIMIT.
+elles ne sont pas toutes obligatoires. on peut écrire une requête sans `WHERE`, sans `ORDER BY` ou sans `LIMIT`.
 
 à retenir : 
 
-LIMIT n affiche au maximum n lignes. avec ORDER BY, il permet de récupérer les premières lignes d'un classement précis.
+`LIMIT` n affiche au maximum n lignes. avec `ORDER BY`, il permet de récupérer les premières lignes d'un classement précis.
 
 
 
@@ -910,73 +1031,90 @@ exercice bilan — chapitre 1 sql
 
 imaginons une librairie possédant les données suivantes dans une table livres : 
 
-id	titre	    genre	        prix	stock
-1	atlas	    science	        30	    8
-2	algebra	    science	        45	    3
-3	brume	    roman	        18	    12
-4	code	    informatique	50	    6
-5	cosmos	    science	        25	    14
-6	demain	    roman	        35	    5
-7	circuits	informatique	40	    9
+| id | titre | genre | prix | stock |
+| --- | --- | --- | --- | --- |
+| 1 | atlas | science | 30 | 8 |
+| 2 | algebra | science | 45 | 3 |
+| 3 | brume | roman | 18 | 12 |
+| 4 | code | informatique | 50 | 6 |
+| 5 | cosmos | science | 25 | 14 |
+| 6 | demain | roman | 35 | 5 |
+| 7 | circuits | informatique | 40 | 9 |
 
 consigne : écris une requête sql pour chaque question sans regarder les exemples précédents.
 
 question 1 : affiche tous les genres de livres sans répétition.
 
+```sql
 SELECT DISTINCT genre
 FROM livres;
+```
 
 question 2 : affiche le titre et le prix des livres dont le titre commence par « c » et dont le prix est inférieur à 50 €, du plus cher au moins cher.
 
+```sql
 SELECT titre, prix
 FROM livres
 WHERE titre LIKE 'c%' AND prix < 50
 ORDER BY prix DESC;
+```
 
 question 3 : affiche le nombre de livres différents ayant au moins 8 unités en stock. appelle le résultat `nombre_livres`.
 
+```sql
 SELECT COUNT(titre) as nombre_livres
 FROM livres
 WHERE stock >= 8;
+```
 
 question 4 : affiche les titres et la valeur totale du stock des 2 livres ayant la plus grande valeur de stock. appelle la colonne calculée `valeur_stock` (valeur = prix × stock).
 
+```sql
 SELECT titre, prix * stock AS valeur_stock
 FROM livres
 ORDER BY valeur_stock DESC
 LIMIT 2;
+```
 
 question 5 : affiche le prix moyen des livres du genre `roman`. appelle le résultat `prix_moyen`.
 
+```sql
 SELECT AVG(prix) AS prix_moyen
 FROM livres
 WHERE genre = 'roman';
+```
 
 maintenant, attaquons le deuxième chapitre de sql qui porte sur les requêtes sur plusieurs tables.
 
 
 
-chapitre 2 — les jointures (JOIN)
+chapitre 2 — les jointures (`JOIN`)
 
-1. pourquoi avons-nous besoin de JOIN ?
+1. pourquoi avons-nous besoin de `JOIN` ?
 
 jusqu'ici, toutes nos requêtes sql utilisaient une seule table. mais, dans une véritable application, les informations sont souvent réparties dans plusieurs tables.
 
 imagine qu'on développe un site de commerce en ligne. on dispose de deux tables : 
 
+```sql
 table clients
+```
 
-id	nom
-1	amina
-2	louis
-3	sara
+| id | nom |
+| --- | --- |
+| 1 | amina |
+| 2 | louis |
+| 3 | sara |
 
+```sql
 table commandes
+```
 
-id	    client_id	montant
-101	    1	        30
-102	    1	        50
-103	    3	        20
+| id | client_id | montant |
+| --- | --- | --- |
+| 101 | 1 | 30 |
+| 102 | 1 | 50 |
+| 103 | 3 | 20 |
 
 remarque que dans la table commandes, nous n'avons pas directement le nom du client. nous avons seulement client_id.
 
@@ -984,7 +1122,7 @@ pourtant, nous on veut répondre à cette question :
 
 quel client a passé quelle commande ?
 
-c'est exactement le rôle de JOIN.
+c'est exactement le rôle de `JOIN`.
 
 2. comment sql relie-t-il les deux tables ?
 
@@ -1000,74 +1138,85 @@ et puisque la commande 102 possède également client_id = 1, elle appartient au
 
 voici comment on écrit cette association en sql : 
 
+```sql
 SELECT clients.nom, commandes.montant
 FROM clients
 JOIN commandes
 ON clients.id = commandes.client_id;
+```
 
 décomposons chaque instruction : 
 
-- SELECT clients.nom, commandes.montant : affiche le nom du client et le montant de la commande.
-- FROM clients : partir de la table clients.
-- JOIN commandes : relier la table commandes.
-- ON clients.id = commandes.client_id : précise comment les deux tables sont reliées.
+- `SELECT` clients.nom, commandes.montant : affiche le nom du client et le montant de la commande.
+- `FROM` clients : partir de la table clients.
+- `JOIN` commandes : relier la table commandes.
+- `ON` clients.id = commandes.client_id : précise comment les deux tables sont reliées.
 
 il est important d'écrire clients.nom plutôt que simplement nom car, lorsque nous utilisons plusieurs tables, nous devons préciser à sql de quelle table provient chaque colonne.
 
 résultat : 
 
-nom	    montant
-amina	30
-amina	50
-sara	20
+| nom | montant |
+| --- | --- |
+| amina | 30 |
+| amina | 50 |
+| sara | 20 |
 
 remarques deux choses : 
 
 1. amina apparaît deux fois. c'est normal, car elle a passé deux commandes.
 2. louis n'apparaît pas. tout simplement parce qu'il n'a aucune commande dans notre table commandes.
 
-le JOIN qu'on vient d'utiliser est une jointure interne. aussi appelée inner join. elle conserve les associations qui existent dans les deux tables.
+le `JOIN` qu'on vient d'utiliser est une jointure interne. aussi appelée inner join. elle conserve les associations qui existent dans les deux tables.
 
 à retenir : 
 
-- JOIN permet de combiner des informations de plusieurs tables. ON indique la condition qui relie leurs lignes.
+- `JOIN` permet de combiner des informations de plusieurs tables. `ON` indique la condition qui relie leurs lignes.
 
 
 
 chapitre 2 — partie 2 : écrire une jointure
 
-jusqu'ici, on a compris pourquoi et comment on utilise JOIN. maintenant, on va apprendre à en écrire une sans modèle.
+jusqu'ici, on a compris pourquoi et comment on utilise `JOIN`. maintenant, on va apprendre à en écrire une sans modèle.
 
 1. la structure d'une jointure
 
+```sql
 SELECT table1.colonne, table2.colonne
 FROM table1
 JOIN table2
 ON table1.id = table2.table1_id;
+```
 
-- SELECT : quelles informations veux-tu afficher ?
-- FROM : quelle est ta première table ?
-- JOIN : quelle autre table veux-tu relier ?
-- ON : quelles colonnes permettent d'associer les lignes ?
+- `SELECT` : quelles informations veux-tu afficher ?
+- `FROM` : quelle est ta première table ?
+- `JOIN` : quelle autre table veux-tu relier ?
+- `ON` : quelles colonnes permettent d'associer les lignes ?
 
 les noms table1, table2 et table1_id sont seulement des exemples. dans une vraie requête, tu utilises les noms de tes tables et de leurs colonnes.
 
 prenons un nouvel exemple : 
 
+```sql
 table etudiants
+```
 
-id	nom
-1	paul
-2	amina
-3	lucas
+| id | nom |
+| --- | --- |
+| 1 | paul |
+| 2 | amina |
+| 3 | lucas |
 
+```sql
 table notes
+```
 
-id	    etudiant_id	    matiere	    note
-101	    1	            maths	    15
-102	    2	            physique	17
-103	    1	            physique	12
-104	    3	            maths	    14
+| id | etudiant_id | matiere | note |
+| --- | --- | --- | --- |
+| 101 | 1 | maths | 15 |
+| 102 | 2 | physique | 17 |
+| 103 | 1 | physique | 12 |
+| 104 | 3 | maths | 14 |
 
 dans la table notes, la colonne etudiant_id indique à quel étudiant appartient chaque note.
 
@@ -1080,22 +1229,25 @@ par exemple :
 
 on veut afficher pour chaque note, le nom de l'etudiant, la matiere et la note obtenue : 
 
+```sql
 SELECT etudiants.nom, notes.matiere, notes.note
 FROM etudiants
 JOIN notes
 ON etudiants.id = notes.etudiant_id;
+```
 
 résultat : 
 
-nom	    matiere	    note
-paul	maths	    15
-amina	physique	17
-paul	physique	12
-lucas	maths	    14
+| nom | matiere | note |
+| --- | --- | --- |
+| paul | maths | 15 |
+| amina | physique | 17 |
+| paul | physique | 12 |
+| lucas | maths | 14 |
 
 chapitre 2 — partie 3 : les alias de tables
 
-AS ne sert pas seulement à renommer une colonne dans le résultat. il existe une autre utilisation très pratique dans notre cas.
+`AS` ne sert pas seulement à renommer une colonne dans le résultat. il existe une autre utilisation très pratique dans notre cas.
 
 c'est donner un nom plus court à une table pendant une requête.
 
@@ -1103,24 +1255,28 @@ c'est donner un nom plus court à une table pendant une requête.
 
 regardons ensemble cette requête : 
 
+```sql
 SELECT etudiants.nom, notes.matiere, notes.note
 FROM etudiants
 JOIN notes
 ON etudiants.id = notes.etudiant_id;
+```
 
 cette requête est correcte mais nous devons écrire etudiants et notes plusieurs fois.
 
 on peut raccourcir en faisant : 
 
+```sql
 SELECT e.nom, n.matiere, n.note
 FROM etudiants as e
 JOIN notes as n
 ON e.id = n.etudiant_id;
+```
 
 ici : 
 
-- etudiants AS e : dans cette requête, e désigne la table etudiants.
-- notes AS n : dans cette requête, n désigne la table notes.
+- etudiants `AS` e : dans cette requête, e désigne la table etudiants.
+- notes `AS` n : dans cette requête, n désigne la table notes.
 - e.nom : la colonne nom de la table etudiants.
 - n.matiere : la colonne matiere de la table notes.
 
@@ -1128,13 +1284,14 @@ ici :
 
 on connait deux types d'alias maintenant : 
 
-type d'alias	    exemple	                        rôle
-alias de colonne	prix * stock AS valeur_stock	donne un nom au résultat d'un calcul
-alias de table	    etudiants AS e	                donne un nom court à une table dans la requête
+| type d'alias | exemple | rôle |
+| --- | --- | --- |
+| alias de colonne | prix * stock AS valeur_stock | donne un nom au résultat d'un calcul |
+| alias de table | etudiants AS e | donne un nom court à une table dans la requête |
 
 on peut même utiliser les deux dans une même requête.
 
-il est important de savoir que AS est facultatif pour les alias de table dans sql. FROM etudiants e est aussi valide.
+il est important de savoir que `AS` est facultatif pour les alias de table dans sql. `FROM` etudiants e est aussi valide.
 
 à retenir : 
 
@@ -1142,110 +1299,125 @@ un alias de table raccourcit son nom dans une requête. il ne modifie pas la tab
 
 
 
-chapitre 2 — partie 4 : LEFT JOIN
+chapitre 2 — partie 4 : `LEFT JOIN`
 
-1. le problème avec JOIN
+1. le problème avec `JOIN`
 
 revenons sur notre exemple avec les étudiants et leurs notes. reprenons les deux tables mais ajoutons une nouvelle étudiante qui se nomme ines.
 
+```sql
 table etudiants
+```
 
-id	nom
-1	paul
-2	amina
-3	lucas
-4	ines
+| id | nom |
+| --- | --- |
+| 1 | paul |
+| 2 | amina |
+| 3 | lucas |
+| 4 | ines |
 
+```sql
 table notes
+```
 
-id	    etudiant_id	    matiere	    note
-101	    1	            maths	    15
-102	    2	            physique	17
-103	    1	            physique	12
-104	    3	            maths	    14
+| id | etudiant_id | matiere | note |
+| --- | --- | --- | --- |
+| 101 | 1 | maths | 15 |
+| 102 | 2 | physique | 17 |
+| 103 | 1 | physique | 12 |
+| 104 | 3 | maths | 14 |
 
 remarque que ines n'a pas de note enregistrée.
 
 exécutons cette requête qu'on connait déjà : 
 
+```sql
 SELECT e.nom, n.matiere, n.note
 FROM etudiants e
 JOIN notes n
 ON e.id = n.etudiant_id;
+```
 
 résultat :
 
-nom	    matiere	    note
-paul	maths	    15
-amina	physique	17
-paul	physique	12
-lucas	maths	    14
+| nom | matiere | note |
+| --- | --- | --- |
+| paul | maths | 15 |
+| amina | physique | 17 |
+| paul | physique | 12 |
+| lucas | maths | 14 |
 
 ines n'apparaît pas ici car aucune ligne de notes ne possède etudiant_id = 4.
 
-c'est normal car JOIN qui signifie INNER JOIN conserve seulement les associations trouvées dans les deux tables.
+c'est normal car `JOIN` qui signifie `INNER JOIN` conserve seulement les associations trouvées dans les deux tables.
 
 mais imagine qu'on veut afficher tous les étudiants et même ceux qui n'ont pas de note.
 
 comment faire alors ?
 
-2. la solution : LEFT JOIN
+2. la solution : `LEFT JOIN`
 
 regardons cette requête :
 
+```sql
 SELECT e.nom, n.matiere, n.note
 FROM etudiants e
 LEFT JOIN notes n
 ON e.id = n.etudiant_id;
+```
 
-remarque qu'on a simplement remplacé JOIN par LEFT JOIN.
+remarque qu'on a simplement remplacé `JOIN` par `LEFT JOIN`.
 
 résultat :
 
-nom	    matiere	    note
-paul	maths	    15
-paul	physique	12
-amina	physique	17
-lucas	maths	    14
-ines	NULL	    NULL
+| nom | matiere | note |
+| --- | --- | --- |
+| paul | maths | 15 |
+| paul | physique | 12 |
+| amina | physique | 17 |
+| lucas | maths | 14 |
+| ines | NULL | NULL |
 
-cette fois ines apparaît. tout simplement parce que LEFT JOIN conserve toutes les lignes de la table située à gauche de la jointure, ici etudiants, même lorsqu'il n'existe aucune correspondance dans notes.
+cette fois ines apparaît. tout simplement parce que `LEFT JOIN` conserve toutes les lignes de la table située à gauche de la jointure, ici etudiants, même lorsqu'il n'existe aucune correspondance dans notes.
 
-3. que signifie NULL ?
+3. que signifie `NULL` ?
 
 observe la dernière ligne : 
 
-nom	    matiere	note
-ines	NULL	NULL
+| nom | matiere | note |
+| --- | --- | --- |
+| ines | NULL | NULL |
 
-NULL signifie que la valeur est absente ou inconnue dans le résultat.
+`NULL` signifie que la valeur est absente ou inconnue dans le résultat.
 
-ici, ines n'a aucune ligne correspondante dans notes. sql remplit donc ces colonnes avec NULL.
+ici, ines n'a aucune ligne correspondante dans notes. sql remplit donc ces colonnes avec `NULL`.
 
-attention, car NULL n'est pas égal à 0. une note de 0 serait une vraie note enregistrée. NULL signifie qu'aucune note n'est disponible.
+attention, car `NULL` n'est pas égal à 0. une note de 0 serait une vraie note enregistrée. `NULL` signifie qu'aucune note n'est disponible.
 
-4. pourquoi appelle-t-on cela LEFT JOIN ?
+4. pourquoi appelle-t-on cela `LEFT JOIN` ?
 
 regardons : 
 
+```sql
 FROM etudiants e
 LEFT JOIN notes n
+```
 
 - etudiants --> table de gauche --> toutes les lignes sont conservées
 
 - notes --> table de droite --> lignes associées si elles existent
 
-la table etudiants est celle qui est située à gauche de LEFT JOIN. c'est donc elle qui garde toutes les lignes.
+la table etudiants est celle qui est située à gauche de `LEFT JOIN`. c'est donc elle qui garde toutes les lignes.
 
-5. JOIN contre LEFT JOIN
+5. `JOIN` contre `LEFT JOIN`
 
-JOIN (INNER JOIN) : 
+`JOIN` (`INNER JOIN`) : 
 
 - conserve uniquement les lignes qui ont une correspondance;
 - ines n'est pas incluse;
 - 4 lignes dans notre exemple
 
-LEFT JOIN : 
+`LEFT JOIN` : 
 
 - conserve toutes les lignes de la table de gauche;
 - ines est incluse;
@@ -1253,25 +1425,33 @@ LEFT JOIN :
 
 à retenir : 
 
+```sql
 LEFT JOIN conserve toutes les lignes de la table de gauche même si il y a aucune correspondance dans la table de droite. les colonnes sans correspondance prennent alors la valeur NULL.
+```
 
 
 
-chapitre 2 — partie 5 : UNION
+chapitre 2 — partie 5 : `UNION`
 
-1. pourquoi utilise-t-on UNION ?
+1. pourquoi utilise-t-on `UNION` ?
 
 imaginons qu'on veut développer une application de vente de jeux vidéo.
 
+```sql
 on possède deux magasins, chacun avec sa propre table.
+```
 
+```sql
 table magasin_lille
+```
 jeu
 minecraft
 fifa
 gta
 
+```sql
 table magasin_paris
+```
 jeu
 fortnite
 gta
@@ -1279,31 +1459,41 @@ valorant
 
 on connait déjà cette requête :
 
+```sql
 SELECT jeu
 FROM magasin_lille;
+```
 
 elle affiche les trois jeux du magasin de lille.
 
 mais imagine qu'on veut obtenir la liste de tous les jeux proposés par les deux magasins.
 
+```sql
 on pourrait exécuter deux requêtes séparément, mais ce n'est pas très pratique.
+```
 
-la solution est UNION
+la solution est `UNION`
 
-2. comment fonctionne UNION ?
+2. comment fonctionne `UNION` ?
 
+```sql
 SELECT jeu
 FROM magasin_lille;
+```
 
+```sql
 UNION
+```
 
+```sql
 SELECT jeu
 FROM magasin_paris;
+```
 
 observons la structure :
-- première requête SELECT : les jeux de lille;
-- UNION : réunir les deux résultats;
-- deuxième requête SELECT : les jeux de paris.
+- première requête `SELECT` : les jeux de lille;
+- `UNION` : réunir les deux résultats;
+- deuxième requête `SELECT` : les jeux de paris.
 
 voici ce qui se passe :
 
@@ -1315,7 +1505,9 @@ fifa            gta
 
 gta             valorant
 
+```sql
 union
+```
   |
   |
   v
@@ -1338,79 +1530,96 @@ les deux magasins proposent gta, mais celui-ci apparaît une seule fois dans le 
 
 pourquoi ?
 
-tout simplement parce que UNION élimine automatiquement les doublons.
+tout simplement parce que `UNION` élimine automatiquement les doublons.
 
-tu te souviens de DISTINCT ? c'est le même principe d'élimination des doublons, mais cette fois sur le résultat combiné des deux requêtes.
+tu te souviens de `DISTINCT` ? c'est le même principe d'élimination des doublons, mais cette fois sur le résultat combiné des deux requêtes.
 
-3. les conditions pour utiliser UNION
+3. les conditions pour utiliser `UNION`
 
 les deux tables doivent avoir le même schéma relationnel. pour nos requêtes, retiens notamment que les résultats doivent avoir des colonnes compatibles.
 
 par exemple : 
 
+```sql
 SELECT jeu, prix
 FROM magasin_lille
+```
 
+```sql
 UNION
+```
 
+```sql
 SELECT jeu, prix
 FROM magasin_paris;
+```
 
 cela fonctionne si les deux tables possèdent jeu et prix avec des types compatibles.
 
 en revanche :
 
+```sql
 SELECT jeu, prix
 FROM magasin_lille
+```
 
+```sql
 UNION
+```
 
+```sql
 SELECT jeu
 FROM magasin_paris;
+```
 
 est incorrect la première requête retourne deux colonnes, tandis que la deuxième n'en retourne qu'une.
 
 les deux résultats doivent avoir le même nombre de colonnes, dans un ordre compatible, avec des types de données compatibles.
 
-autre précision : quand il y a plusieurs colonnes, UNION supprime les doublons sur la ligne entière, pas simplement sur une colonne.
+autre précision : quand il y a plusieurs colonnes, `UNION` supprime les doublons sur la ligne entière, pas simplement sur une colonne.
 
-4. différence entre JOIN et UNION
+4. différence entre `JOIN` et `UNION`
 
 c'est le point le plus important de cette leçon.
 
-JOIN	                                                            UNION
-associe les informations de plusieurs tables selon une condition	réunit les lignes de plusieurs résultats
-permet d'ajouter des colonnes provenant d'autres tables	            conserve le même nombre de colonnes
-utilise généralement ON	                                            s'écrit entre deux requêtes SELECT
+| JOIN | UNION |
+| --- | --- |
+| associe les informations de plusieurs tables selon une condition | réunit les lignes de plusieurs résultats |
+| permet d'ajouter des colonnes provenant d'autres tables | conserve le même nombre de colonnes |
+| utilise généralement ON | s'écrit entre deux requêtes SELECT |
 
 une image mentale simple :
-- JOIN sert à mettre les informations côte à côte en reliant des lignes correspondantes;
-- UNION sert à empiler deux ensembles de résultats et retirer les doublons.
+- `JOIN` sert à mettre les informations côte à côte en reliant des lignes correspondantes;
+- `UNION` sert à empiler deux ensembles de résultats et retirer les doublons.
 
 à retenir : 
 
-UNION réunit les résultats de deux requêtes SELECT, supprime les doublons et exige des colonnes compatibles.
+`UNION` réunit les résultats de deux requêtes `SELECT`, supprime les doublons et exige des colonnes compatibles.
 
 
 
-chapitre 2 — partie 6 : INTERSECT
+chapitre 2 — partie 6 : `INTERSECT`
 
-1. à quoi sert INTERSECT ?
+1. à quoi sert `INTERSECT` ?
 
-on vient d'apprendre que UNION permet de réunir les membres de deux clubs.
+on vient d'apprendre que `UNION` permet de réunir les membres de deux clubs.
 
 mais imaginons maintenant qu'on veut retrouver uniquement les personnes qui appartiennent aux deux clubs en même temps.
 
 reprenons les tables.
 
+```sql
 table club_a
+```
 
 membre
 amina
 paul
 sara
 
+```sql
 table club_b
+```
 
 membre
 paul
@@ -1419,17 +1628,23 @@ ines
 
 regarde bien : paul est le seul membre présent dans les deux tables.
 
-c'est exactement ce que permet INTERSECT.
+c'est exactement ce que permet `INTERSECT`.
 
-2. comment fonctionne INTERSECT ?
+2. comment fonctionne `INTERSECT` ?
 
+```sql
 SELECT membre
 FROM club_a
+```
 
+```sql
 INTERSECT
+```
 
+```sql
 SELECT membre
 FROM club_b;
+```
 
 SQL récupère les membres du premier résultat, puis ceux du deuxième, et conserve uniquement ceux qui sont présents dans les deux résultats.
 
@@ -1438,33 +1653,34 @@ résultat :
 membre
 paul
 
-INTERSECT retourne uniquement les lignes communes aux deux résultats.
+`INTERSECT` retourne uniquement les lignes communes aux deux résultats.
 
-3. quelle différence entre UNION et INTERSECT ?
+3. quelle différence entre `UNION` et `INTERSECT` ?
 
 avec exactement les mêmes tables :
 
-opération	résultat
-UNION	    amina, paul, sara, lucas, ines
-INTERSECT	paul
+| opération | résultat |
+| --- | --- |
+| UNION | amina, paul, sara, lucas, ines |
+| INTERSECT | paul |
 
 c'est donc très différent.
 
-UNION signifie présent dans le premier ou le deuxième résultat, éventuellement les deux.
+`UNION` signifie présent dans le premier ou le deuxième résultat, éventuellement les deux.
 
-INTERSECT signifie présent dans le premier et le deuxième résultat.
+`INTERSECT` signifie présent dans le premier et le deuxième résultat.
 
 les deux opérations suppriment les doublons par défaut.
 
-comme pour UNION, les deux requêtes doivent retourner le même nombre de colonnes, avec des types compatibles.
+comme pour `UNION`, les deux requêtes doivent retourner le même nombre de colonnes, avec des types compatibles.
 
 à retenir : 
 
-- INTERSECT conserve uniquement les lignes présentes dans les deux résultats.
+- `INTERSECT` conserve uniquement les lignes présentes dans les deux résultats.
 
 
 
-chapitre 2 — partie 7 : EXCEPT
+chapitre 2 — partie 7 : `EXCEPT`
 
 nous avons étudié deux opérations :
 - union : les éléments présents dans au moins une des deux tables;
@@ -1472,11 +1688,13 @@ nous avons étudié deux opérations :
 
 il reste une troisième opération importante qui est la différence entre deux ensembles.
 
-1. comprendre EXCEPT
+1. comprendre `EXCEPT`
 
 imagine qu'on organise deux activités dans ton école.
 
+```sql
 table basket
+```
 
 nom
 paul
@@ -1484,7 +1702,9 @@ amina
 lucas
 ines
 
+```sql
 table football
+```
 
 nom
 lucas
@@ -1508,17 +1728,23 @@ nom
 amina
 ines
 
-pour obtenir cela, on utilise EXCEPT.
+pour obtenir cela, on utilise `EXCEPT`.
 
 2. la requête SQL
 
+```sql
 SELECT nom
 FROM basket
+```
 
+```sql
 EXCEPT
+```
 
+```sql
 SELECT nom
 FROM football;
+```
 
 comment SQL raisonne-t-il ?
 
@@ -1526,54 +1752,66 @@ il prend les noms présents dans le premier résultat, puis retire ceux qui appa
 
 3. attention car l'ordre change le résultat !
 
-c'est la principale difficulté avec EXCEPT.
+c'est la principale difficulté avec `EXCEPT`.
 
 comparons ces deux requêtes : 
 
 requête a
 
+```sql
 SELECT nom 
 FROM basket
+```
 
+```sql
 EXCEPT
+```
 
+```sql
 SELECT nom 
 FROM football;
+```
 
 résultat : amina, ines.
 
 
 requête b
 
+```sql
 SELECT nom 
 FROM football
+```
 
+```sql
 EXCEPT
+```
 
+```sql
 SELECT nom 
 FROM basket;
+```
 
 résultat : sara, adam.
 
 pourquoi les résultats sont-ils différents ?
 
-parce que EXCEPT signifie "prendre les éléments du premier résultat qui n'existent pas dans le deuxième".
+parce que `EXCEPT` signifie "prendre les éléments du premier résultat qui n'existent pas dans le deuxième".
 
 si tu inverses les deux requêtes, tu inverses le sens de la différence.
 
-contrairement à UNION et INTERSECT, l'ordre des deux résultats est donc essentiel.
+contrairement à `UNION` et `INTERSECT`, l'ordre des deux résultats est donc essentiel.
 
-comme les deux opérations précédentes, EXCEPT supprime les doublons par défaut et nécessite des colonnes compatibles.
+comme les deux opérations précédentes, `EXCEPT` supprime les doublons par défaut et nécessite des colonnes compatibles.
 
 à retenir : 
 
-EXCEPT récupère les lignes présentes dans le premier résultat, mais absentes du deuxième.
+`EXCEPT` récupère les lignes présentes dans le premier résultat, mais absentes du deuxième.
 
 
 
 chapitre 2 — partie 8 : le produit cartésien
 
-jusqu'ici, nous avons étudié JOIN, LEFT JOIN, UNION, INTERSECT et EXCEPT.
+jusqu'ici, nous avons étudié `JOIN`, `LEFT JOIN`, `UNION`, `INTERSECT` et `EXCEPT`.
 
 aujourd'hui, nous allons comprendre une opération essentielle pour les requêtes sur plusieurs tables qui est le produit cartésien.
 
@@ -1583,13 +1821,17 @@ imagine qu'on gère un magasin de vêtements.
 
 on dispose de deux tables :
 
+```sql
 table couleurs
+```
 
 couleur
 noir
 blanc
 
+```sql
 table tailles
+```
 
 taille
 s
@@ -1604,28 +1846,35 @@ réfléchissons sans SQL :
 
 on obtient donc :
 
-couleur	taille
-noir	  s
-noir	  m
-noir	  l
-blanc	  s
-blanc	  m
-blanc	  l
+| couleur | taille |
+| --- | --- |
+| noir | s |
+| noir | m |
+| noir | l |
+| blanc | s |
+| blanc | m |
+| blanc | l |
 
 c'est exactement ce qu'on appelle un produit cartésien.
 
+```sql
 on associe chaque ligne de la première table à chacune des lignes de la deuxième table.
+```
 
 2. comment l'écrire en SQL ?
 
 on utilise cette syntaxe :
 
+```sql
 SELECT *
 FROM couleurs, tailles;
+```
 
-remarque qu'il n'y a ni JOIN, ni ON, ni WHERE.
+remarque qu'il n'y a ni `JOIN`, ni `ON`, ni `WHERE`.
 
+```sql
 on a simplement placé deux tables dans FROM, séparées par une virgule.
+```
 
 SQL va produire toutes les combinaisons possibles de leurs lignes.
 
@@ -1653,23 +1902,27 @@ le résultat contient donc 6 lignes.
 
 aussi, il faut faire attention car un produit cartésien involontaire peut produire énormément de résultats.
 
-4. quelle différence avec JOIN ?
+4. quelle différence avec `JOIN` ?
 
 rappellons nous de cette requête : 
 
+```sql
 SELECT e.nom, n.note
 FROM etudiants e
 JOIN notes n
 ON e.id = n.etudiant_id;
+```
 
 ici, SQL ne combine pas n'importe quel étudiant avec n'importe quelle note.
 
-la condition ON précise quelles lignes doivent être associées.
+la condition `ON` précise quelles lignes doivent être associées.
 
 en revanche :
 
+```sql
 SELECT *
 FROM etudiants, notes;
+```
 
 produit toutes les associations possibles, même celles qui ne correspondent pas au bon étudiant.
 
@@ -1679,14 +1932,15 @@ par exemple, si nous avons quatre étudiants et quatre notes, cela produit :
 4\times4=16\text{ lignes}
 \]
 
-alors que notre JOIN précédent n'en produisait que quatre.
+alors que notre `JOIN` précédent n'en produisait que quatre.
 
 voilà la différence :
 
-produit cartésien	                    jointure interne
-associe toutes les lignes possibles	  associe les lignes respectant une condition
-ne nécessite aucune condition	        utilise une condition de correspondance
-peut générer énormément de lignes	    ne conserve que les associations qui correspondent
+| produit cartésien | jointure interne |
+| --- | --- |
+| associe toutes les lignes possibles | associe les lignes respectant une condition |
+| ne nécessite aucune condition | utilise une condition de correspondance |
+| peut générer énormément de lignes | ne conserve que les associations qui correspondent |
 
 à retenir : 
 
@@ -1694,25 +1948,31 @@ un produit cartésien associe chaque ligne d'une table à toutes les lignes d'un
 
 
 
-chapitre 2 — partie 9 : clés étrangères et jointures avec WHERE
+chapitre 2 — partie 9 : clés étrangères et jointures avec `WHERE`
 
 1. pourquoi les tables sont-elles reliées ?
 
 imagine deux tables dans une entreprise : 
 
+```sql
 table employes
+```
 
-id	nom
-1	  sara
-2	  adam
-3	  ines
+| id | nom |
+| --- | --- |
+| 1 | sara |
+| 2 | adam |
+| 3 | ines |
 
+```sql
 table badges
+```
 
-id	  employe_id	zone
-101	  1	          laboratoire
-102	  1	          bureaux
-103	  3	          accueil
+| id | employe_id | zone |
+| --- | --- | --- |
+| 101 | 1 | laboratoire |
+| 102 | 1 | bureaux |
+| 103 | 3 | accueil |
 
 regardons les deux colonnes suivantes :
 - employes.id
@@ -1736,20 +1996,24 @@ clé étrangère : une colonne, ou un ensemble de colonnes, faisant référence 
 
 ici, badges.employe_id est la clé étrangère qui fait référence à employes.id.
 
-3. faire une jointure avec WHERE
+3. faire une jointure avec `WHERE`
 
 on connait déjà cette syntaxe :
 
+```sql
 SELECT e.nom, b.zone
 FROM employes e
 JOIN badges b
 ON e.id = b.employe_id;
+```
 
 mais il y a également une autre manière d'obtenir le même résultat :
 
+```sql
 SELECT e.nom, b.zone
 FROM employes e, badges b
 WHERE e.id = b.employe_id;
+```
 
 les deux requêtes sont équivalentes ici.
 
@@ -1757,37 +2021,43 @@ pourquoi ?
 
 revenons à notre produit cartésien : 
 
+```sql
 FROM employes e, badges b
+```
 
 produit toutes les combinaisons possibles.
 
 puis :
 
+```sql
 WHERE e.id = b.employe_id
+```
 
 élimine celles dont les identifiants ne correspondent pas.
 
 résultat :
 
-nom	  zone
-sara	laboratoire
-sara	bureaux
-ines	accueil
+| nom | zone |
+| --- | --- |
+| sara | laboratoire |
+| sara | bureaux |
+| ines | accueil |
 
 adam n'apparaît pas, car il n'a aucun badge.
 
 différence entre les deux écritures : 
 
-avec JOIN	                        avec WHERE
-JOIN badges b ON ...	            FROM employes e, badges b WHERE ...
-condition indiquée dans ON	      condition indiquée dans WHERE
-syntaxe généralement préférable	  syntaxe classique à savoir lire
+| avec JOIN | avec WHERE |
+| --- | --- |
+| JOIN badges b ON ... | FROM employes e, badges b WHERE ... |
+| condition indiquée dans ON | condition indiquée dans WHERE |
+| syntaxe généralement préférable | syntaxe classique à savoir lire |
 
-il est recommandé de privilégier JOIN ... ON pour écrire tes jointures. mais maîtrise aussi la syntaxe avec WHERE.
+il est recommandé de privilégier `JOIN` ... `ON` pour écrire tes jointures. mais maîtrise aussi la syntaxe avec `WHERE`.
 
 à retenir : 
 
-une clé étrangère permet de référencer une ligne d'une autre table. une jointure interne peut s'écrire avec JOIN ... ON, ou avec plusieurs tables dans FROM et une condition de correspondance dans WHERE.
+une clé étrangère permet de référencer une ligne d'une autre table. une jointure interne peut s'écrire avec `JOIN` ... `ON`, ou avec plusieurs tables dans `FROM` et une condition de correspondance dans `WHERE`.
 
 
 
@@ -1805,36 +2075,46 @@ imaginons qu'on développe une boutique en ligne.
 
 elle possède trois tables : 
 
+```sql
 table clients
+```
 
-id	nom
-1	  amina
-2	  louis
-3	  sara
+| id | nom |
+| --- | --- |
+| 1 | amina |
+| 2 | louis |
+| 3 | sara |
 
+```sql
 table produits
+```
 
-id	nom	    prix
-10	souris	25
-11	clavier	60
-12	casque	90
+| id | nom | prix |
+| --- | --- | --- |
+| 10 | souris | 25 |
+| 11 | clavier | 60 |
+| 12 | casque | 90 |
 
+```sql
 table commandes
+```
 
-id	client_id	produit_id	quantite
-101	1	        10	        2
-102	3	        12	        1
-103	1	        11	        1
-104	2	        10	        1
+| id | client_id | produit_id | quantite |
+| --- | --- | --- | --- |
+| 101 | 1 | 10 | 2 |
+| 102 | 3 | 12 | 1 |
+| 103 | 1 | 11 | 1 |
+| 104 | 2 | 10 | 1 |
 
 maintenant, imagine qu'on nous demande d'afficher le nom de chaque client, le produit qu'il a commandé et la quantité commandée.
 
 où trouver chaque information ? : 
 
-information	        table
-nom du client	      clients
-nom du produit	    produits
-quantité commandée	commandes
+| information | table |
+| --- | --- |
+| nom du client | clients |
+| nom du produit | produits |
+| quantité commandée | commandes |
 
 il nous faut donc les trois tables.
 
@@ -1855,10 +2135,12 @@ donc amina a commandé deux souris.
 
 nous connaissons déjà cette première jointure :
 
+```sql
 SELECT c.nom, co.quantite
 FROM clients c
 JOIN commandes co
 ON c.id = co.client_id;
+```
 
 elle associe les commandes à leurs clients.
 
@@ -1866,27 +2148,30 @@ mais il manque le nom du produit.
 
 il suffit donc d'ajouter une deuxième jointure :
 
+```sql
 SELECT c.nom, p.nom, co.quantite
 FROM clients c
 JOIN commandes co
     ON c.id = co.client_id
 JOIN produits p
     ON co.produit_id = p.id;
+```
 
 lisons cette requête progressivement :
-- FROM clients c : on part des clients.
-- JOIN commandes co : on récupère leurs commandes.
-- ON c.id = co.client_id : on associe chaque commande à son client.
-- JOIN produits p : on ajoute les informations sur les produits.
-- ON co.produit_id = p.id : on associe chaque commande au produit concerné.
+- `FROM` clients c : on part des clients.
+- `JOIN` commandes co : on récupère leurs commandes.
+- `ON` c.id = co.client_id : on associe chaque commande à son client.
+- `JOIN` produits p : on ajoute les informations sur les produits.
+- `ON` co.produit_id = p.id : on associe chaque commande au produit concerné.
 
 résultat :
 
-nom du client	nom du produit	quantite
-amina	        souris	        2
-sara	        casque	        1
-amina	        clavier	        1
-louis	        souris	        1
+| nom du client | nom du produit | quantite |
+| --- | --- | --- |
+| amina | souris | 2 |
+| sara | casque | 1 |
+| amina | clavier | 1 |
+| louis | souris | 1 |
 
 4. pourquoi utilise-t-on c.nom et p.nom ?
 
@@ -1896,7 +2181,9 @@ elles possèdent toutes les deux une colonne appelée nom.
 
 si on écrit simplement :
 
+```sql
 SELECT nom
+```
 
 SQL ne saura pas si on parle du nom du client ou de celui du produit : la référence est ambiguë.
 
@@ -1904,23 +2191,27 @@ il faut donc préciser :
 - c.nom : le nom du client;
 - p.nom : le nom du produit.
 
-on peut même rendre le résultat plus clair avec AS :
+on peut même rendre le résultat plus clair avec `AS` :
 
+```sql
 SELECT
-    c.nom AS client,
-    p.nom AS produit,
+```
+    c.nom `AS` client,
+    p.nom `AS` produit,
     co.quantite
+```sql
 FROM clients c
 JOIN commandes co
     ON c.id = co.client_id
 JOIN produits p
     ON co.produit_id = p.id;
+```
 
 ici, on réutilise deux notions qu'on connait déjà : les jointures et les alias.
 
 à retenir : 
 
-pour relier trois tables, on peut utiliser deux JOIN successifs. chaque on précise comment la nouvelle table est associée aux précédentes.
+pour relier trois tables, on peut utiliser deux `JOIN` successifs. chaque on précise comment la nouvelle table est associée aux précédentes.
 
 
 
@@ -1930,25 +2221,33 @@ chapitre 2 — partie 11 : colonnes ambiguës et auto-jointures
 
 imaginons deux tables.
 
+```sql
 table livres
+```
 
-id	titre	pages
-1	atlas	200
-2	brume	200
-3	cosmos	350
+| id | titre | pages |
+| --- | --- | --- |
+| 1 | atlas | 200 |
+| 2 | brume | 200 |
+| 3 | cosmos | 350 |
 
+```sql
 table auteurs
+```
 
-id	nom
-1	sara
-2	paul
+| id | nom |
+| --- | --- |
+| 1 | sara |
+| 2 | paul |
 
 remarque que les deux tables possèdent une colonne appelée id.
 
 si on écrit :
 
+```sql
 SELECT id
 FROM livres, auteurs;
+```
 
 SQL ne sait pas de quel id on parle.
 
@@ -1958,13 +2257,17 @@ c'est ce qu'on appelle une ambiguïté.
 
 la solution consiste à préciser la table :
 
+```sql
 SELECT livres.id
 FROM livres, auteurs;
+```
 
 ou à utiliser un alias :
 
+```sql
 SELECT l.id
 FROM livres l, auteurs a;
+```
 
 2. qu'est-ce qu'une auto-jointure ?
 
@@ -1972,14 +2275,17 @@ jusqu'ici, on reliait deux tables différentes.
 
 mais savais-tu qu'on pouvait relier une table à elle-même ?
 
+```sql
 on appelle une auto-jointure (SELF JOIN).
+```
 
 reprenons la table livres comme exemple : 
 
-id	titre	pages
-1	atlas	200
-2	brume	200
-3	cosmos	350
+| id | titre | pages |
+| --- | --- | --- |
+| 1 | atlas | 200 |
+| 2 | brume | 200 |
+| 3 | cosmos | 350 |
 
 imagine qu'on veut retrouver toutes les paires de livres qui possèdent le même nombre de pages.
 
@@ -1987,26 +2293,29 @@ nous avons besoin de comparer les livres entre eux.
 
 pour cela, nous utilisons deux fois la même table, avec deux alias différents : 
 
+```sql
 SELECT l1.titre, l2.titre
 FROM livres l1
 JOIN livres l2
 ON l1.pages = l2.pages;
+```
 
 décomposons :
 - livres l1 : première utilisation de la table;
-- JOIN livres l2 : deuxième utilisation de cette même table;
-- ON l1.pages = l2.pages : associer les livres qui ont le même nombre de pages.
+- `JOIN` livres l2 : deuxième utilisation de cette même table;
+- `ON` l1.pages = l2.pages : associer les livres qui ont le même nombre de pages.
 
 nous utilisons l1 et l2 pour que SQL sache à quelle utilisation de la table nous faisons référence.
 
 résultat : 
 
-l1.titre	l2.titre
-atlas	    atlas
-atlas	    brume
-brume	    atlas
-brume	    brume
-cosmos	    cosmos
+| l1.titre | l2.titre |
+| --- | --- |
+| atlas | atlas |
+| atlas | brume |
+| brume | atlas |
+| brume | brume |
+| cosmos | cosmos |
 
 remarque quelque chose d'étrange : un livre peut être associé à lui-même !
 
@@ -2020,11 +2329,13 @@ c'est le comportement de la requête telle que nous l'avons écrite.
 
 si notre but est de retrouver chaque paire de livres différents une seule fois, on peut ajouter une condition supplémentaire :
 
+```sql
 SELECT l1.titre, l2.titre
 FROM livres l1
 JOIN livres l2
 ON l1.pages = l2.pages
 AND l1.id < l2.id;
+```
 
 ici, l1.id < l2.id permet d'éviter :
 - qu'un livre soit associé à lui-même;
@@ -2032,8 +2343,9 @@ ici, l1.id < l2.id permet d'éviter :
 
 résultat :
 
-l1.titre	l2.titre
-atlas	    brume
+| l1.titre | l2.titre |
+| --- | --- |
+| atlas | brume |
 
 à retenir : 
 
@@ -2041,20 +2353,21 @@ une auto-jointure relie une table à elle-même. on utilise deux alias distincts
 
 
 
-chapitre 3 — partie 1 : les agrégations par groupe avec GROUP BY
+chapitre 3 — partie 1 : les agrégations par groupe avec `GROUP BY`
 
-nous avons vu les fonctions d'agrégation par défaut (SUM, MAX, MIN, AVG, COUNT) qui s'appliquent sur tous les enregistrements de la table. maintenant, nous voulons aller plus loin.
+nous avons vu les fonctions d'agrégation par défaut (`SUM`, `MAX`, `MIN`, `AVG`, `COUNT`) qui s'appliquent sur tous les enregistrements de la table. maintenant, nous voulons aller plus loin.
 
 1. le problème à résoudre
 
 imaginons une table eleves :
 
-nom    classe     note
-paul   mpsi       12
-sara   mpsi       16
-lucas  pcsi       10
-amina  pcsi       14
-adam   pcsi       15
+| nom | classe | note |
+| --- | --- | --- |
+| paul   mpsi | 12 |  |
+| sara   mpsi | 16 |  |
+| lucas  pcsi | 10 |  |
+| amina  pcsi | 14 |  |
+| adam   pcsi | 15 |  |
 
 si on nous demande : « quelle est la note moyenne de chaque classe ? », sans SQL, on va regrouper les élèves par classe, puis calculer la moyenne pour chacun de ces groupes.
 
@@ -2063,46 +2376,55 @@ si on nous demande : « quelle est la note moyenne de chaque classe ? », sans S
 
 2. comment l'écrire en SQL ?
 
-il est possible de séparer les enregistrements en groupes avec GROUP BY, pour ensuite appliquer une fonction à chaque groupe.
+il est possible de séparer les enregistrements en groupes avec `GROUP BY`, pour ensuite appliquer une fonction à chaque groupe.
 
+```sql
 SELECT classe, AVG(note)
 FROM eleves
 GROUP BY classe;
+```
 
 résultat :
 
 classe  avg(note)
-mpsi    14
-pcsi    13
+| mpsi | 14 |
+| --- | --- |
+| pcsi | 13 |
 
 tu peux même calculer plusieurs choses en même temps sur chaque classe, comme la moyenne, la note maximum et la note minimum :
 
+```sql
 SELECT classe, AVG(note), MAX(note), MIN(note)
 FROM eleves
 GROUP BY classe;
+```
 
-3. la règle d'or du GROUP BY
+3. la règle d'or du `GROUP BY`
 
 c'est le point le plus important de ce chapitre :
-avec un GROUP BY a, il ne faut pas afficher d'attribut, à part a.
+avec un `GROUP BY` a, il ne faut pas afficher d'attribut, à part a.
 
 si on écrit :
 
+```sql
 SELECT classe, nom, AVG(note)
 FROM eleves
 GROUP BY classe;
+```
 
 c'est une erreur car SQL a regroupé la classe mpsi sur une seule ligne. il ne sait donc pas quel nom afficher sur cette ligne unique (paul ou sara ?). il ne faut donc afficher que la colonne qui sert au regroupement, accompagnée de tes calculs.
 
 à retenir : 
 
-GROUP BY permet de créer des groupes pour effectuer des calculs sur chacun d'eux. dans le SELECT, tu ne peux mettre que la colonne servant au regroupement et tes fonctions d'agrégation.
+`GROUP BY` permet de créer des groupes pour effectuer des calculs sur chacun d'eux. dans le `SELECT`, tu ne peux mettre que la colonne servant au regroupement et tes fonctions d'agrégation.
 
 
 
-chapitre 3 — partie 2 : utiliser HAVING pour filtrer les groupes
+chapitre 3 — partie 2 : utiliser `HAVING` pour filtrer les groupes
 
+```sql
 on sait filtrer les lignes avec WHERE, et on sait regrouper des lignes avec GROUP BY.
+```
 
 maintenant, comment fait-on pour filtrer les groupes eux-mêmes ?
 
@@ -2110,31 +2432,34 @@ maintenant, comment fait-on pour filtrer les groupes eux-mêmes ?
 
 reprenons notre table eleves :
 
-nom     classe      note
-paul    mpsi        12
-sara    mpsi        16
-lucas   pcsi        10
-amina   pcsi        14
-adam    csi         15
+| nom | classe | note |
+| --- | --- | --- |
+| paul | mpsi | 12 |
+| sara | mpsi | 16 |
+| lucas   pcsi | 10 |  |
+| amina   pcsi | 14 |  |
+| adam | csi | 15 |
 
 si l'on te demande : « quelles sont les classes qui ont une moyenne supérieure ou égale à 14 ? »
 
-si tu utilises WHERE, SQL va essayer de l'appliquer à chaque ligne individuelle, avant même de faire les moyennes. WHERE ne peut pas voir le résultat d'une fonction d'agrégation.
+si tu utilises `WHERE`, SQL va essayer de l'appliquer à chaque ligne individuelle, avant même de faire les moyennes. `WHERE` ne peut pas voir le résultat d'une fonction d'agrégation.
 
 2. comment l'écrire en SQL ?
 
-c'est ici qu'intervient HAVING. il s'utilise juste après GROUP BY et permet d'appliquer une condition sur le résultat d'une fonction d'agrégation.
+c'est ici qu'intervient `HAVING`. il s'utilise juste après `GROUP BY` et permet d'appliquer une condition sur le résultat d'une fonction d'agrégation.
 
+```sql
 SELECT classe, avg(note)
 FROM eleves
 GROUP BY classe
 HAVING AVG(note) >= 14;
+```
 
 le fonctionnement de SQL est précis :
 
 - il regroupe les élèves par classe;
 - il calcule la moyenne de chaque classe (14 pour mpsi, 13 pour pcsi).
-- il applique la condition having AVG(note) >= 14 sur ces moyennes.
+- il applique la condition having `AVG`(note) >= 14 sur ces moyennes.
 - il rejette le groupe pcsi.
 
 résultat :
@@ -2142,36 +2467,38 @@ résultat :
 classe  avg(note)
 mpsi    14
 
-3. quelle est la différence entre WHERE et HAVING ?
+3. quelle est la différence entre `WHERE` et `HAVING` ?
 
 c'est une question classique.
 
-- WHERE s'applique aux lignes individuelles, avant le regroupement.
-- HAVING s'applique aux groupes agrégés, après le regroupement.
+- `WHERE` s'applique aux lignes individuelles, avant le regroupement.
+- `HAVING` s'applique aux groupes agrégés, après le regroupement.
 
 on peut même utiliser les deux dans la même requête.
 
 par exemple : « affiche la moyenne des classes, mais en ne comptant que les notes supérieures à 10, et ne garde que les classes dont cette nouvelle moyenne est de 15. »
 
+```sql
 SELECT classe, avg(note)
 FROM eleves
 WHERE note > 10
 GROUP BY classe
 HAVING AVG(note) = 15;
+```
 
-ici, SQL filtre d'abord les mauvaises notes avec WHERE, fait ses groupes, calcule la moyenne, puis utilise HAVING pour ne garder que l'excellence.
+ici, SQL filtre d'abord les mauvaises notes avec `WHERE`, fait ses groupes, calcule la moyenne, puis utilise `HAVING` pour ne garder que l'excellence.
 
 à retenir : 
 
-HAVING est le WHERE des groupes. il s'utilise obligatoirement après GROUP BY et permet de filtrer sur des fonctions d'agrégation.
+`HAVING` est le `WHERE` des groupes. il s'utilise obligatoirement après `GROUP BY` et permet de filtrer sur des fonctions d'agrégation.
 
 
 
-chapitre 4 — partie 1 : les SELECT imbriqués
+chapitre 4 — partie 1 : les `SELECT` imbriqués
 
 nous entamons la dernière notion majeure du cours.
 
-jusqu'ici, nous avons comparé des données avec des valeurs fixes écrites "à la main" : WHERE note >= 14, WHERE agence = 'nasa', etc.
+jusqu'ici, nous avons comparé des données avec des valeurs fixes écrites "à la main" : `WHERE` note >= 14, `WHERE` agence = 'nasa', etc.
 
 mais que faire si la valeur à comparer n'est pas connue à l'avance et doit elle-même être calculée ?
 
@@ -2189,22 +2516,25 @@ si l'on te demande : « quels sont les élèves qui ont la note maximum ? »
 
 
 
-chapitre 4 — partie 1 : le principe des SELECT imbriqués
+chapitre 4 — partie 1 : le principe des `SELECT` imbriqués
 
-jusqu’ici, chaque requête faisait un seul SELECT. aujourd’hui, on va apprendre à mettre un SELECT à l’intérieur d’un autre SELECT.
+jusqu’ici, chaque requête faisait un seul `SELECT`. aujourd’hui, on va apprendre à mettre un `SELECT` à l’intérieur d’un autre `SELECT`.
 
 1. le problème à résoudre
 
 imagine qu'on gère les résultats d’un contrôle.
 
+```sql
 table eleve
+```
 
-nom	    note
-adam	14
-lucas	9
-paul	12
-sara	16
-ines	11
+| nom | note |
+| --- | --- |
+| adam | 14 |
+| lucas | 9 |
+| paul | 12 |
+| sara | 16 |
+| ines | 11 |
 
 on nous demande : « quel est le nom de l’élève qui a la meilleure note ? »
 
@@ -2217,29 +2547,33 @@ réfléchissons d’abord sans SQL. on fera naturellement deux étapes :
 
 le premier réflexe serait d’écrire :
 
+```sql
 SELECT nom
 FROM eleve
 WHERE note = MAX(note);
+```
 
 ça renvoie une erreur. pourquoi ?
 
-on l’a vu au chapitre 3 : le WHERE regarde les lignes une par une. quand il examine la ligne d’adam, il ne connaît que la note d’adam, donc il est incapable de calculer le maximum de toute la table.
+on l’a vu au chapitre 3 : le `WHERE` regarde les lignes une par une. quand il examine la ligne d’adam, il ne connaît que la note d’adam, donc il est incapable de calculer le maximum de toute la table.
 
-les fonctions d’agrégation (MAX, MIN, AVG…) ne s’utilisent pas directement dans un WHERE.
+les fonctions d’agrégation (`MAX`, `MIN`, `AVG`…) ne s’utilisent pas directement dans un `WHERE`.
 
 3. la solution : une requête dans la requête
 
 on fait les deux étapes séparément, en mettant la première entre parenthèses :
 
+```sql
 SELECT nom
 FROM eleve
 WHERE note = (SELECT MAX(note) FROM eleve);
+```
 
 lisons cette requête de l’intérieur vers l’extérieur :
 
-1. (SELECT MAX(note) FROM eleve) : la sous-requête. SQL l’exécute en premier et elle renvoie une seule valeur, 16.
-2. SQL remplace alors la parenthèse par ce résultat. la requête devient : WHERE note = 16.
-3. SELECT nom FROM eleve WHERE note = 16 : on cherche l’élève qui a 16.
+1. (`SELECT` `MAX`(note) `FROM` eleve) : la sous-requête. SQL l’exécute en premier et elle renvoie une seule valeur, 16.
+2. SQL remplace alors la parenthèse par ce résultat. la requête devient : `WHERE` note = 16.
+3. `SELECT` nom `FROM` eleve `WHERE` note = 16 : on cherche l’élève qui a 16.
 
 résultat :
 
@@ -2248,33 +2582,40 @@ sara
 
 4. un deuxième exemple pour bien voir le modèle
 
+```sql
 table joueurs
+```
 
-nom	    age
-adam	20
-lucas	21
-paul	19
-sara	22
+| nom | age |
+| --- | --- |
+| adam | 20 |
+| lucas | 21 |
+| paul | 19 |
+| sara | 22 |
 
 question : « qui est le joueur le plus jeune ? »
 
+```sql
 SELECT nom
 FROM joueurs
 WHERE age = (SELECT MIN(age) FROM joueurs);
+```
 
-1. la sous-requête (SELECT MIN(age) FROM joueurs) renvoie 19;
-2. la requête devient WHERE age = 19;
+1. la sous-requête (`SELECT` `MIN`(age) `FROM` joueurs) renvoie 19;
+2. la requête devient `WHERE` age = 19;
 3. résultat : paul.
 
 ici, la structure est la même que pour sara. seuls la table, la colonne et la fonction changent :
 
+```sql
 SELECT colonne_a_afficher
 FROM table
 WHERE colonne = (SELECT FONCTION(colonne) FROM table);
+```
 
 à retenir : 
 
-une sous-requête est un SELECT entre parenthèses, exécuté en premier. quand elle renvoie une seule valeur, on peut l’utiliser comme un simple nombre dans un WHERE.
+une sous-requête est un `SELECT` entre parenthèses, exécuté en premier. quand elle renvoie une seule valeur, on peut l’utiliser comme un simple nombre dans un `WHERE`.
 
 
 
@@ -2284,13 +2625,16 @@ chapitre 4 — partie 2 : comparer à une moyenne
 
 imagine qu'on gère une équipe de vendeurs.
 
+```sql
 table vendeurs
+```
 
-nom	    ventes
-amina	30
-louis	50
-sara	20
-paul	60
+| nom | ventes |
+| --- | --- |
+| amina | 30 |
+| louis | 50 |
+| sara | 20 |
+| paul | 60 |
 
 on nous demande : « quels vendeurs ont vendu plus que la moyenne ? »
 
@@ -2303,14 +2647,16 @@ encore deux étapes : le calcul, puis la comparaison.
 
 2. la requête SQL
 
+```sql
 SELECT nom
 FROM vendeurs
 WHERE ventes > (SELECT AVG(ventes) FROM vendeurs);
+```
 
 lisons de l’intérieur vers l’extérieur :
 
-1. (SELECT AVG(ventes) FROM vendeurs) renvoie 40;
-2. la requête devient WHERE ventes > 40;
+1. (`SELECT` `AVG`(ventes) `FROM` vendeurs) renvoie 40;
+2. la requête devient `WHERE` ventes > 40;
 3. SQL garde les vendeurs qui dépassent 40.
 
 résultat :
@@ -2323,33 +2669,39 @@ remarquons que cette fois, le résultat contient plusieurs lignes. la sous-requ�
 
 3. comparer un calcul à une moyenne
 
+```sql
 table pays
+```
 
-nom	    pib	population
-norvia	600	20
-kalos	200	10
-merin	900	30
-tobia	100	10
+| nom | pib | population |
+| --- | --- | --- |
+| norvia | 600 | 20 |
+| kalos | 200 | 10 |
+| merin | 900 | 30 |
+| tobia | 100 | 10 |
 
 question : « quels pays ont un pib par habitant supérieur à la moyenne ? »
 
 le pib par habitant, c’est pib / population :
 
-nom	    pib / population
-norvia	30
-kalos	20
-merin	30
-tobia	10
+| nom | pib / population |
+| --- | --- |
+| norvia | 30 |
+| kalos | 20 |
+| merin | 30 |
+| tobia | 10 |
 
 moyenne : (30 + 20 + 30 + 10) / 4 = 22,5
 
+```sql
 SELECT nom
 FROM pays
 WHERE (pib / population) > (SELECT AVG(pib / population) FROM pays);
+```
 
 décomposons :
 
-1. (SELECT AVG(pib / population) FROM pays) calcule le pib par habitant de chaque pays, puis en fait la moyenne : 22,5;
+1. (`SELECT` `AVG`(pib / population) `FROM` pays) calcule le pib par habitant de chaque pays, puis en fait la moyenne : 22,5;
 2. à gauche, (pib / population) est calculé pour chaque ligne;
 3. on garde les pays au-dessus de 22,5.
 
@@ -2363,46 +2715,52 @@ une sous-requête peut se comparer avec =, >, <, >=… et elle peut contenir un 
 
 chapitre 4 — partie 3 : une autre solution sans sous-requête
 
-peut-on trouver l’élève qui a la meilleure note sans SELECT imbriqué ?
+peut-on trouver l’élève qui a la meilleure note sans `SELECT` imbriqué ?
 
 oui. et on connait déjà les outils : ils viennent du chapitre 1.
 
 reprenons le problème de la partie 1 : 
 
+```sql
 table eleve
+```
 
-nom	    note
-adam	14
-lucas	9
-paul	12
-sara	16
-ines	11
+| nom | note |
+| --- | --- |
+| adam | 14 |
+| lucas | 9 |
+| paul | 12 |
+| sara | 16 |
+| ines | 11 |
 
 réfléchissons sans SQL : si on range les élèves de la meilleure note à la moins bonne, celui qui a la meilleure note est le premier de la liste.
 
 1. la requête sql
 
+```sql
 SELECT nom
 FROM eleve
 ORDER BY note DESC
 LIMIT 1;
+```
 
 décomposons :
 
-1. SELECT nom FROM eleve : on prend les noms des élèves;
-2. ORDER BY note DESC : on les trie de la meilleure note à la moins bonne;
-3. LIMIT 1 : on ne garde que la première ligne.
+1. `SELECT` nom `FROM` eleve : on prend les noms des élèves;
+2. `ORDER BY` note `DESC` : on les trie de la meilleure note à la moins bonne;
+3. `LIMIT` 1 : on ne garde que la première ligne.
 
 après le tri, la table ressemble à ça :
 
-nom	    note
-sara	16
-adam	14
-paul	12
-ines	11
-lucas	9
+| nom | note |
+| --- | --- |
+| sara | 16 |
+| adam | 14 |
+| paul | 12 |
+| ines | 11 |
+| lucas | 9 |
 
-LIMIT 1 ne garde que la première ligne.
+`LIMIT` 1 ne garde que la première ligne.
 
 résultat : sara, comme avec la sous-requête.
 
@@ -2410,23 +2768,25 @@ résultat : sara, comme avec la sous-requête.
 
 imaginons qu’adam ait lui aussi 16 :
 
-nom	    note
-adam	16
-lucas	9
-paul	12
-sara	16
-ines	11
+| nom | note |
+| --- | --- |
+| adam | 16 |
+| lucas | 9 |
+| paul | 12 |
+| sara | 16 |
+| ines | 11 |
 
-- avec la sous-requête, WHERE note = (SELECT MAX(note) FROM eleve) devient WHERE note = 16. on obtient adam et sara, c’est-à-dire tous les ex-aequo.
-- avec ORDER BY … LIMIT 1, on ne garde qu’une seule ligne. donc un seul des deux, et rien ne garantit lequel.
+- avec la sous-requête, `WHERE` note = (`SELECT` `MAX`(note) `FROM` eleve) devient `WHERE` note = 16. on obtient adam et sara, c’est-à-dire tous les ex-aequo.
+- avec `ORDER BY` … `LIMIT` 1, on ne garde qu’une seule ligne. donc un seul des deux, et rien ne garantit lequel.
 
-                sous-requête	            order by + limit 1
-sans ex-aequo	même résultat	            même résultat
-avec ex-aequo	renvoie tous les meilleurs	renvoie un seul
+| sous-requête | order by + limit 1 |  |
+| --- | --- | --- |
+| sans ex-aequo | même résultat | même résultat |
+| avec ex-aequo | renvoie tous les meilleurs | renvoie un seul |
 
 à retenir : 
 
-pour trouver le maximum ou le minimum, ORDER BY … DESC LIMIT 1 remplace la sous-requête. mais en cas d’égalité, seule la sous-requête renvoie tous les ex-aequo.
+pour trouver le maximum ou le minimum, `ORDER BY` … `DESC` `LIMIT` 1 remplace la sous-requête. mais en cas d’égalité, seule la sous-requête renvoie tous les ex-aequo.
 
 
 
@@ -2436,14 +2796,17 @@ jusqu’ici, la sous-requête renvoyait toujours un nombre (un max, un min, une 
 
 1. le problème à résoudre
 
+```sql
 table planete
+```
 
-nom	        etoile
-terre	    soleil
-mars	    soleil
-proxima b	proxima centauri
-proxima d	proxima centauri
-kepler-22b	kepler-22
+| nom | etoile |
+| --- | --- |
+| terre | soleil |
+| mars | soleil |
+| proxima b | proxima centauri |
+| proxima d | proxima centauri |
+| kepler-22b | kepler-22 |
 
 question : « quelles planètes sont dans le même système que proxima b ? » (c’est-à-dire autour de la même étoile)
 
@@ -2456,16 +2819,18 @@ remarquons que proxima b fait partie du résultat, puisqu’elle est évidemment
 
 2. solution avec une sous-requête
 
+```sql
 SELECT p1.nom
 FROM planete as p1
 WHERE p1.etoile = (SELECT p2.etoile
                    FROM planete as p2
                    WHERE p2.nom = 'proxima b');
+```
 
 de l’intérieur vers l’extérieur :
 
 1. la sous-requête cherche l’étoile de proxima b et renvoie le texte 'proxima centauri';
-2. la requête devient : WHERE p1.etoile = 'proxima centauri';
+2. la requête devient : `WHERE` p1.etoile = 'proxima centauri';
 3. on affiche les planètes de cette étoile.
 
 résultat :
@@ -2480,32 +2845,37 @@ on utilise p1 et p2 car la table planete est utilisée deux fois. une fois dans 
 
 peut-on faire la même chose sans sous-requête ? oui, avec une auto-jointure :
 
+```sql
 SELECT p1.nom
 FROM planete AS p1, planete AS p2
 WHERE p1.etoile = p2.etoile
 AND p2.nom = 'proxima b';
+```
 
 décomposons : 
 
-1. FROM planete AS p1, planete AS p2 : produit cartésien de la table avec elle-même, soit 5 × 5 = 25 lignes;
+1. `FROM` planete `AS` p1, planete `AS` p2 : produit cartésien de la table avec elle-même, soit 5 × 5 = 25 lignes;
 2. p2.nom = 'proxima b' : on ne garde que les lignes où p2 est proxima b, il en reste 5 :
 
-p1.nom	    p1.etoile	        p2.nom	    p2.etoile
-terre	    soleil	            proxima b	proxima centauri
-mars	    soleil	            proxima b	proxima centauri
-proxima b	proxima centauri	proxima b	proxima centauri
-proxima d	proxima centauri	proxima b	proxima centauri
-kepler-22b	kepler-22	        proxima b	proxima centauri
+| p1.nom | p1.etoile | p2.nom | p2.etoile |
+| --- | --- | --- | --- |
+| terre | soleil | proxima b | proxima centauri |
+| mars | soleil | proxima b | proxima centauri |
+| proxima b | proxima centauri | proxima b | proxima centauri |
+| proxima d | proxima centauri | proxima b | proxima centauri |
+| kepler-22b | kepler-22 | proxima b | proxima centauri |
 
 3. p1.etoile = p2.etoile : on garde les lignes où les deux étoiles sont identiques. il reste proxima b et proxima d.
 
-même résultat que la sous-requête. on peut aussi l’écrire avec JOIN :
+même résultat que la sous-requête. on peut aussi l’écrire avec `JOIN` :
 
+```sql
 SELECT p1.nom
 FROM planete p1
 JOIN planete p2 
 ON p1.etoile = p2.etoile
 WHERE p2.nom = 'proxima b';
+```
 
 à retenir : 
 
@@ -2530,9 +2900,9 @@ client 1 ──┐
 client 2 ──┼──►  serveur (base de données)
 client 3 ──┘
 
-1. le client 1 envoie SELECT nom FROM country au serveur;
+1. le client 1 envoie `SELECT` nom `FROM` country au serveur;
 2. le serveur exécute la requête et renvoie le résultat (france, …);
-3. d’autres clients peuvent aussi envoyer des UPDATE ou des DELETE pour modifier la base.
+3. d’autres clients peuvent aussi envoyer des `UPDATE` ou des `DELETE` pour modifier la base.
 
 cette architecture est partout, pas seulement pour les bases de données : 
 
@@ -2541,10 +2911,11 @@ cette architecture est partout, pas seulement pour les bases de données :
 
 2. les problèmes du client-serveur
 
-problème	                                                exemple concret
-le serveur peut planter au milieu d’une modification	    un emprunt est enregistré à moitié : le livre est marqué « emprunté », mais l’emprunteur n’est pas noté
-deux personnes peuvent modifier la base en même temps	    deux étudiants empruntent le dernier exemplaire au même moment
-comment protéger la base contre les accès non autorisés ?	n’importe quel client peut envoyer DELETE FROM livre;
+| problème | exemple concret |
+| --- | --- |
+| le serveur peut planter au milieu d’une modification | un emprunt est enregistré à moitié : le livre est marqué « emprunté », mais l’emprunteur n’est pas noté |
+| deux personnes peuvent modifier la base en même temps | deux étudiants empruntent le dernier exemplaire au même moment |
+| comment protéger la base contre les accès non autorisés ? | n’importe quel client peut envoyer DELETE FROM livre; |
 
 le troisième problème est le plus grave car dans ce modèle, les clients parlent directement à la base.
 
@@ -2625,13 +2996,13 @@ option 2 : une base de données avec un sgbd.
 
 voici la différence :
 
-                    sgbd                                    tableur (excel)
-volume              des millions de lignes                  quelques milliers max
-accès simultané     des centaines d'utilisateurs en même    un seul utilisateur à la fois
-                    temps
-intégrité           règles strictes (clés, types)           aucune règle automatique
-langage             sql (puissant, standardisé)             formules (limitées)
-sécurité            droits par utilisateur                  aucune gestion native
+| sgbd | tableur (excel) |  |
+| --- | --- | --- |
+| volume | des millions de lignes | quelques milliers max |
+| accès simultané | des centaines d'utilisateurs en même temps | un seul utilisateur à la fois |
+| intégrité | règles strictes (clés, types) | aucune règle automatique |
+| langage | sql (puissant, standardisé) | formules (limitées) |
+| sécurité | droits par utilisateur | aucune gestion native |
 
 un tableur, c'est bien pour un usage personnel. une base de données, c'est pour les applications réelles avec plusieurs utilisateurs et beaucoup de données.
 
@@ -2655,10 +3026,11 @@ chaque table a :
 
 prenons la table etudiant comme exemple :
 
-id_etudiant     nom         prenom      age
-1               camara      louis       20
-2               dupont      sarah       21
-3               martin      hugo        19
+| id_etudiant | nom | prenom | age |
+| --- | --- | --- | --- |
+| 1 | camara | louis | 20 |
+| 2 | dupont | sarah | 21 |
+| 3 | martin | hugo | 19 |
 
 le schéma de cette table s'écrit comme ça :
 
@@ -2678,7 +3050,7 @@ deux règles importantes :
 
 dans le schéma, on la souligne :
 
-etudiant(<u>id_etudiant</u>, nom, prenom, age)
+etudiant(**id_etudiant**, nom, prenom, age)
 
 ici, id_etudiant est la clé primaire. il n'y aura jamais deux étudiants avec le même id.
 
@@ -2689,7 +3061,7 @@ une clé étrangère est un attribut dans une table qui fait référence à la c
 
 prenons la table emprunt comme exemple :
 
-emprunt(<u>id_emprunt</u>, date, #id_etudiant, #id_livre)
+emprunt(**id_emprunt**, date, #id_etudiant, #id_livre)
 
 #id_etudiant est une clé étrangère → elle pointe vers id_etudiant dans la table etudiant.
 
@@ -2798,9 +3170,9 @@ ETUDIANT (0..*) ── INSCRIPTION ── (1..*) COURS
 règle : on crée une table intermédiaire avec les deux clés étrangères. les deux clés étrangères forment ensemble la clé primaire de cette table.
 
 mld :
-etudiant(<u>id_etudiant</u>, nom, prenom)
-cours(<u>id_cours</u>, intitule)
-inscription(<u>#id_etudiant, #id_cours</u>, date_insc)
+etudiant(**id_etudiant**, nom, prenom)
+cours(**id_cours**, intitule)
+inscription(**#id_etudiant, #id_cours**, date_insc)
 
 
 cas b : association 1..1 / 0..*  (one-to-many)
@@ -2815,8 +3187,8 @@ PROMOTION (1..1) ── APPARTIENT ── (0..*) ETUDIANT
 règle : pas de table intermédiaire. la clé primaire du côté 0..* va comme clé étrangère dans la table du côté 1..1.
 
 mld :
-promotion(<u>id_promotion</u>, nom)
-etudiant(<u>id_etudiant</u>, nom, prenom, #id_promotion)
+promotion(**id_promotion**, nom)
+etudiant(**id_etudiant**, nom, prenom, #id_promotion)
 
 
 cas c : association 1..1 / 1..1
@@ -2826,11 +3198,12 @@ règle : on fusionne les deux tables en une seule, ou on met la clé étrangère
 
 les types sql à connaître
 
-type            usage
-integer         nombre entier
-varchar(50)     chaîne de caractères (max 50 caractères)
-serial          entier auto-incrémenté → parfait pour les id
-date            une date
+| type | usage |
+| --- | --- |
+| integer | nombre entier |
+| varchar(50) | chaîne de caractères (max 50 caractères) |
+| serial | entier auto-incrémenté → parfait pour les id |
+| date | une date |
 
 à retenir :
 
@@ -2842,12 +3215,14 @@ création de tables en sql
 
 1. créer une table — create table
 
+```sql
 CREATE TABLE etudiant (
     id_etudiant SERIAL PRIMARY KEY,
     nom         VARCHAR(50),
     prenom      VARCHAR(50),
     age         INTEGER
 );
+```
 
 - serial : entier auto-incrémenté, le sgbd génère l'id tout seul;
 - primary key : déclare la clé primaire;
@@ -2859,44 +3234,54 @@ CREATE TABLE etudiant (
 
 pour déclarer une clé étrangère, on utilise references :
 
+```sql
 CREATE TABLE inscription (
     id_inscription   SERIAL PRIMARY KEY,
     date_inscription DATE,
     id_etudiant      INTEGER REFERENCES etudiant(id_etudiant),
     id_cours         INTEGER REFERENCES cours(id_cours)
 );
+```
 
 le sgbd vérifie automatiquement l'intégrité référentielle. si tu essaies d'insérer un id_etudiant qui n'existe pas dans la table etudiant, il refuse.
 
 
 3. insérer des données — insert into
 
+```sql
 INSERT INTO etudiant (nom, prenom, age)
 VALUES ('camara', 'louis', 20);
+```
 
 on ne précise pas id_etudiant car il est serial : le sgbd le génère automatiquement.
 
 
 4. modifier des données — update
 
+```sql
 UPDATE etudiant
 SET age = 21
 WHERE nom = 'camara';
+```
 
 attention : sans where, toutes les lignes de la table sont modifiées.
 
 
 5. supprimer des lignes — delete
 
+```sql
 DELETE FROM etudiant
 WHERE id_etudiant = 3;
+```
 
 attention : sans where, toute la table est vidée. les colonnes restent, mais il n'y a plus aucune ligne.
 
 
 6. supprimer une table — drop table
 
+```sql
 DROP TABLE etudiant;
+```
 
 ça supprime la table et toutes ses données. c'est définitif.
 
